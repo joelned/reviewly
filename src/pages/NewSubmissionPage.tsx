@@ -40,7 +40,6 @@ export function NewSubmissionPage() {
   const [draftSaved, setDraftSaved] = useState(false)
   const [importedFileName, setImportedFileName] = useState('')
   const [showAllFocusAreas, setShowAllFocusAreas] = useState(false)
-  const [tipsOpen, setTipsOpen] = useState(false)
   const [submitState, setSubmitState] = useState<'idle' | 'loading' | 'success'>(
     'idle',
   )
@@ -67,7 +66,6 @@ export function NewSubmissionPage() {
     }
   }
 
-  const hasSourceReady = source === 'paste' ? Boolean(code.trim()) : prLoaded
   const hasCoreDetails =
     Boolean(title.trim()) && (source === 'paste' ? Boolean(code.trim()) : prLoaded)
   const canAdvanceFromStep =
@@ -85,13 +83,6 @@ export function NewSubmissionPage() {
   const visibleFocusAreas = showAllFocusAreas
     ? focusAreas
     : focusAreas.filter((item, index) => index < 2 || reviewFocus.includes(item))
-  const stepSummary =
-    composerStep === 1
-      ? 'Pick the source format reviewers should use.'
-      : composerStep === 2
-        ? 'Add only the context and code needed for a strong review.'
-        : 'Finish access and focus so the request is easy to triage.'
-
   const handleFetch = () => {
     setPrLoading(true)
     setPrLoaded(false)
@@ -175,24 +166,14 @@ export function NewSubmissionPage() {
           <WorkspaceShell wide className="px-4 py-6 pb-48 sm:py-8 lg:px-6 xl:pb-28">
             <section className="mb-8">
               <Card className="space-y-4">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                  <div>
-                    <Badge variant="brand">Step {composerStep} of 3</Badge>
-                    <h2 className="mt-3 text-xl font-semibold text-text-strong">
-                      {composerStep === 1
-                        ? 'Choose your source'
-                        : composerStep === 2
-                          ? 'Add submission details'
-                          : 'Configure review settings'}
-                    </h2>
-                    <p className="mt-2 max-w-2xl text-sm leading-6 text-text-muted">
-                      {composerStep === 1
-                        ? 'Start with the smallest decision: how reviewers should receive this change.'
-                        : composerStep === 2
-                          ? 'Now give reviewers the exact context they need without making them dig for it.'
-                          : 'Finish with access, focus areas, and optional timing so the request is easy to triage.'}
-                    </p>
-                  </div>
+                <div>
+                  <h2 className="text-xl font-semibold text-text-strong">
+                    {composerStep === 1
+                      ? 'Choose your source'
+                      : composerStep === 2
+                        ? 'Add submission details'
+                        : 'Review settings'}
+                  </h2>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   {[1, 2, 3].map((step) => (
@@ -205,50 +186,16 @@ export function NewSubmissionPage() {
                     />
                   ))}
                 </div>
-                <div className="grid gap-3 sm:grid-cols-3">
-                  {[
-                    ['Source', 1, 'Choose how the review should start.'],
-                    ['Details', 2, 'Add title, code, and reviewer context.'],
-                    ['Settings', 3, 'Keep access and focus lightweight.'],
-                  ].map(([label, step, body]) => (
-                    <button
-                      key={label}
-                      className={cn(
-                        'rounded-2xl border px-4 py-3 text-left transition disabled:cursor-not-allowed disabled:opacity-60',
-                        composerStep === step
-                          ? 'border-brand surface-brand-soft'
-                          : 'border-neutral-200 surface-subtle text-text-body',
-                      )}
-                      disabled={
-                        (step === 2 && source === 'github' && !prLoaded) ||
-                        (step === 3 && !hasCoreDetails)
-                      }
-                      onClick={() => {
-                        if (step === 2 && source === 'github' && !prLoaded) return
-                        if (step === 3 && !hasCoreDetails) return
-                        setComposerStep(step as 1 | 2 | 3)
-                      }}
-                      type="button"
-                    >
-                      <div className="text-xs font-semibold uppercase tracking-[0.18em] text-text-muted">
-                        Step {step}
-                      </div>
-                      <div className="mt-1 text-sm font-semibold text-text-strong">{label}</div>
-                      <div className="mt-1 text-sm leading-5 text-text-muted">{body}</div>
-                    </button>
-                  ))}
-                </div>
               </Card>
             </section>
 
-            <div className="grid gap-8 xl:grid-cols-[minmax(0,1.45fr)_320px]">
+            <div className="grid gap-8">
             <form className="space-y-8">
               {composerStep === 1 && (
                 <Card className="space-y-6">
                   <SectionHeader
                     title="Submission source"
-                    action={<Badge variant="neutral">Start here</Badge>}
-                    description="Choose the smallest path to good feedback. You can switch methods before you move to the next step."
+                    description="Choose the fastest way to give reviewers the context they need."
                   />
                   <SegmentedControl
                     ariaLabel="Choose a submission source"
@@ -259,27 +206,10 @@ export function NewSubmissionPage() {
                     ]}
                     value={source}
                   />
-
-                  <div className="grid gap-3 md:grid-cols-2">
-                    <Card className="space-y-2" surface="subtle">
-                      <div className="text-sm font-semibold text-text-strong">Paste code</div>
-                      <p className="text-sm leading-6 text-text-muted">
-                        Best when you want feedback on a focused snippet or one risky change.
-                      </p>
-                    </Card>
-                    <Card className="space-y-2" surface="subtle">
-                      <div className="text-sm font-semibold text-text-strong">GitHub PR</div>
-                      <p className="text-sm leading-6 text-text-muted">
-                        Best when reviewers need commit context, file counts, and surrounding diff history.
-                      </p>
-                    </Card>
-                  </div>
-
                   {source === 'github' ? (
                     <Card className="space-y-5" surface="subtle">
                       <SectionHeader
                         title="GitHub import"
-                        action={<Badge variant="neutral">Best for full pull-request context</Badge>}
                       />
                       <div className="grid gap-4 md:grid-cols-2">
                         <Field label="Repository">
@@ -333,10 +263,7 @@ export function NewSubmissionPage() {
                     </Card>
                   ) : (
                     <Card className="space-y-5" surface="subtle">
-                      <SectionHeader
-                        title="Paste a focused change"
-                        action={<Badge variant="neutral">Fastest route to feedback</Badge>}
-                      />
+                      <SectionHeader title="Paste a focused change" />
                       <Dropzone
                         accept=".ts,.tsx,.js,.jsx,.py,.rs,.go,.txt"
                         description={
@@ -358,9 +285,6 @@ export function NewSubmissionPage() {
                           })
                         }}
                       />
-                      <div className="rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-text-body">
-                        You can still continue without a file and paste the final code in the next step.
-                      </div>
                     </Card>
                   )}
                 </Card>
@@ -371,8 +295,7 @@ export function NewSubmissionPage() {
                   <Card className="space-y-6">
                     <SectionHeader
                       title="Core context"
-                      action={<Badge variant="neutral">What reviewers will see first</Badge>}
-                      description="Start with the smallest context package that still lets someone understand the change."
+                      description="Add only the context reviewers actually need."
                     />
                     <Field
                       label={
@@ -402,7 +325,7 @@ export function NewSubmissionPage() {
                       />
                     </Field>
 
-                    <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_220px]">
+                    <div className="grid gap-4">
                       <Field
                         label={
                           <div className="flex items-center gap-1.5 text-sm font-semibold">
@@ -422,25 +345,12 @@ export function NewSubmissionPage() {
                         />
                       </Field>
 
-                      <Card className="space-y-3" surface="subtle">
-                        <div className="text-sm font-semibold text-text-strong">Required to continue</div>
-                        <ul className="space-y-2 text-sm leading-6 text-text-muted">
-                          <li>Give the change a precise title.</li>
-                          <li>Add the code or PR context reviewers will evaluate.</li>
-                          <li>Leave a short description if the risk is not obvious.</li>
-                        </ul>
-                      </Card>
                     </div>
                   </Card>
 
                   <Card className="space-y-6">
                     <SectionHeader
                       title={source === 'paste' ? 'Code to review' : 'PR context'}
-                      action={
-                        <Badge variant="neutral">
-                          {source === 'paste' ? 'Keep the scope focused' : 'Context attached from GitHub'}
-                        </Badge>
-                      }
                     />
 
                     <div className="space-y-2">
@@ -517,8 +427,7 @@ export function NewSubmissionPage() {
                 <Card className="space-y-6">
                 <SectionHeader
                   title="Review Settings"
-                  action={<Badge variant="neutral">Visibility, focus areas, reminders</Badge>}
-                  description="Only the final delivery choices are left. Keep the configuration as light as the review requires."
+                  description="Keep these choices lightweight."
                 />
 
                 <FieldGroup
@@ -569,8 +478,7 @@ export function NewSubmissionPage() {
                 <Card className="space-y-4" surface="subtle">
                   <SectionHeader
                     title="Reviewer assignment"
-                    action={<Badge variant="neutral">Optional</Badge>}
-                    description="Assign a reviewer now when you already know who should see this request first."
+                    description="Assign a reviewer now only if you already know who should see this first."
                   />
                   <div className="rounded-2xl border border-neutral-200 bg-white px-4 py-4">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -701,109 +609,9 @@ export function NewSubmissionPage() {
                     />
                   </div>
                 </div>
-                <Card className="space-y-4" surface="subtle">
-                  <Button
-                    block
-                    aria-expanded={tipsOpen}
-                    className="justify-between px-0 text-left hover:bg-transparent"
-                    onClick={() => setTipsOpen((value) => !value)}
-                    type="button"
-                    variant="ghost"
-                  >
-                    <span className="text-sm font-semibold text-text-strong">
-                      How to get better feedback
-                    </span>
-                    <ChevronDown
-                      className={cn(
-                        'h-4 w-4 text-neutral-400 transition-transform',
-                        tipsOpen && 'rotate-180',
-                      )}
-                    />
-                  </Button>
-                  {tipsOpen ? (
-                    <div className="grid gap-3 md:grid-cols-3">
-                      <div className="rounded-xl bg-white p-4 shadow-sm">
-                        <div className="text-sm font-semibold text-text-strong">Clarity</div>
-                        <p className="mt-2 text-sm leading-6 text-text-muted">
-                          Reviewers respond faster when the title and description explain the
-                          goal, risk, and expected feedback.
-                        </p>
-                      </div>
-                      <div className="rounded-xl bg-white p-4 shadow-sm">
-                        <div className="text-sm font-semibold text-text-strong">Scope</div>
-                        <p className="mt-2 text-sm leading-6 text-text-muted">
-                          Smaller submissions are easier to review thoroughly and usually get
-                          higher-quality comments.
-                        </p>
-                      </div>
-                      <div className="rounded-xl bg-white p-4 shadow-sm">
-                        <div className="text-sm font-semibold text-text-strong">Follow-up</div>
-                        <p className="mt-2 text-sm leading-6 text-text-muted">
-                          Set a deadline only when timing matters so the team can prioritize
-                          urgent review work correctly.
-                        </p>
-                      </div>
-                    </div>
-                  ) : null}
-                </Card>
               </Card>
               )}
             </form>
-              <aside className="hidden space-y-6 xl:sticky xl:top-24 xl:block xl:self-start">
-                <Card elevated className="space-y-4">
-                  <SectionHeader
-                    title="Progress summary"
-                    description="Keep the current step and the minimum next action visible while you work."
-                  />
-                  <div className="rounded-2xl border border-brand-100 bg-brand-50/60 px-4 py-3">
-                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
-                      Right now
-                    </div>
-                    <div className="mt-2 text-sm font-semibold text-text-strong">{stepSummary}</div>
-                  </div>
-                  <div className="space-y-3">
-                    {[
-                      ['Current step', composerStep === 1 ? 'Source' : composerStep === 2 ? 'Details' : 'Settings'],
-                      ['Source', source === 'paste' ? 'Paste code' : 'GitHub PR'],
-                      ['Language', language],
-                      ['Imported file', importedFileName || 'None'],
-                      ['Reviewer', assignedReviewer ?? 'Assign later'],
-                      ['Visibility', visibility === 'org' ? 'Organization only' : visibility],
-                      ['Focus areas', `${reviewFocus.length} selected`],
-                      ['Deadline', deadlineEnabled && deadline ? deadline : 'Not set'],
-                    ].map(([label, value]) => (
-                      <div
-                        key={label}
-                        className="grid grid-cols-[110px_minmax(0,1fr)] items-start gap-3 rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3"
-                      >
-                        <span className="text-sm text-text-muted">{label}</span>
-                        <span className="text-right text-sm font-medium text-text-strong">{value}</span>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-
-                <Card elevated className="space-y-4">
-                  <SectionHeader title="Ready to move on?" />
-                  <div className="space-y-3">
-                    {([
-                      ['Source ready', source === 'github' ? hasSourceReady : true],
-                      ['Details added', hasCoreDetails],
-                      ['Ready to submit', canSubmit],
-                    ] as Array<[string, boolean]>).map(([label, complete]) => (
-                      <div
-                        key={label}
-                        className="flex items-center justify-between rounded-2xl border border-neutral-200 bg-white px-4 py-3"
-                      >
-                        <span className="text-sm text-text-body">{label}</span>
-                        <Badge variant={complete ? 'success' : 'neutral'}>
-                          {complete ? 'Done' : 'Pending'}
-                        </Badge>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-              </aside>
             </div>
           </WorkspaceShell>
 

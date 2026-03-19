@@ -12,6 +12,7 @@ import {
   Settings,
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import {
   Avatar,
   DesktopViewport,
@@ -94,6 +95,7 @@ const mobileDetailNavItems = [
 
 export function SubmissionDetailPage() {
   const navigate = useNavigate()
+  const { isReviewer, isSubmitter } = useAuth()
   const [selectedDesktopLine, setSelectedDesktopLine] = useState<number>(6)
   const [actionToast, setActionToast] = useState<string | null>(null)
   const [mobileCommentFilter, setMobileCommentFilter] = useState<'unresolved' | 'all'>(
@@ -156,6 +158,26 @@ export function SubmissionDetailPage() {
                 </div>
                 <div className="ml-2 flex items-center gap-2">
                   <Badge variant="warning">Reviewing</Badge>
+                  {isReviewer ? (
+                    <Button
+                      onClick={() => navigate('/reviews/402')}
+                      size="sm"
+                      type="button"
+                      variant="primary"
+                    >
+                      Review
+                    </Button>
+                  ) : null}
+                  {isSubmitter ? (
+                    <Button
+                      onClick={() => navigate('/reports/402')}
+                      size="sm"
+                      type="button"
+                      variant="outline"
+                    >
+                      Export
+                    </Button>
+                  ) : null}
                 </div>
               </div>
             </header>
@@ -367,13 +389,33 @@ export function SubmissionDetailPage() {
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 xl:justify-end">
-                  <Button
-                    onClick={() => navigate('/reviews/402')}
-                    type="button"
-                    variant="outline"
-                  >
-                    Open Review Workspace
-                  </Button>
+                  {isSubmitter ? (
+                    <>
+                      <Button
+                        onClick={() => navigate('/reports/402')}
+                        type="button"
+                        variant="outline"
+                      >
+                        Export Report
+                      </Button>
+                      <Button
+                        onClick={() => showActionToast('Share link copied.')}
+                        type="button"
+                        variant="outline"
+                      >
+                        Share Link
+                      </Button>
+                    </>
+                  ) : null}
+                  {isReviewer ? (
+                    <Button
+                      onClick={() => navigate('/reviews/402')}
+                      type="button"
+                      variant="primary"
+                    >
+                      Open Review Workspace
+                    </Button>
+                  ) : null}
                   <Button
                     onClick={() => showActionToast('Reply composer opened for the active thread.')}
                     type="button"
@@ -743,22 +785,24 @@ export function SubmissionDetailPage() {
                   </div>
                 </section>
 
-                <section className="mb-10">
-                  <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-gray-400">
-                    Reporting
-                  </h3>
-                  <div className="space-y-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm text-slate-600 shadow-sm">
-                    <p>Export becomes useful after the unresolved discussion is cleaned up.</p>
-                    <Button
-                      block
-                      onClick={() => navigate('/reports/402')}
-                      type="button"
-                      variant="outline"
-                    >
-                      View Latest Report
-                    </Button>
-                  </div>
-                </section>
+                {isSubmitter ? (
+                  <section className="mb-10">
+                    <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-gray-400">
+                      Reporting
+                    </h3>
+                    <div className="space-y-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm text-slate-600 shadow-sm">
+                      <p>Export becomes useful after the unresolved discussion is cleaned up.</p>
+                      <Button
+                        block
+                        onClick={() => navigate('/reports/402')}
+                        type="button"
+                        variant="outline"
+                      >
+                        View Latest Report
+                      </Button>
+                    </div>
+                  </section>
+                ) : null}
 
                 <section>
                   <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-gray-400">

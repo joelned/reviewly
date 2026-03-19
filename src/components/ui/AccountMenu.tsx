@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Bell, LogOut, Settings, Shield, User } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../contexts/AuthContext'
 import { Avatar } from '../showcase'
 import { cn } from '../../lib/cn'
 
@@ -19,6 +20,7 @@ export function AccountMenu({
   initials?: string
 }) {
   const navigate = useNavigate()
+  const auth = useAuth()
   const [open, setOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
@@ -63,8 +65,12 @@ export function AccountMenu({
           role="menu"
         >
           <div className="border-b border-neutral-100 px-3 py-3">
-            <div className="text-sm font-semibold text-text-strong">Embiid O.</div>
-            <div className="mt-1 text-sm text-text-muted">embiid@reviewly.app</div>
+            <div className="text-sm font-semibold text-text-strong">
+              {auth.user?.displayName ?? 'Reviewly user'}
+            </div>
+            <div className="mt-1 text-sm text-text-muted">
+              @{auth.user?.username ?? 'signed-out'}
+            </div>
           </div>
 
           <div className="py-2">
@@ -93,6 +99,7 @@ export function AccountMenu({
               className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-text-body transition hover:bg-neutral-50 hover:text-text-strong"
               onClick={() => {
                 setOpen(false)
+                auth.logout()
                 navigate('/auth')
               }}
               role="menuitem"

@@ -9,6 +9,7 @@ import {
   TrendingUp,
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import {
   Avatar,
   DesktopViewport,
@@ -56,6 +57,7 @@ const profileTabs = [
 
 export function ReviewerProfilePage() {
   const navigate = useNavigate()
+  const { user, isReviewer } = useAuth()
   const [activeTab, setActiveTab] = useState<'activity' | 'reviews' | 'stats'>('activity')
   const [tipModalOpen, setTipModalOpen] = useState(false)
   const [selectedTip, setSelectedTip] = useState(2)
@@ -78,6 +80,7 @@ export function ReviewerProfilePage() {
   }
 
   const payableAmount = customAmount.trim() ? Number(customAmount) || 0 : selectedTip
+  const isOwnProfile = isReviewer && user?.username === 'sconnor_dev'
 
   return (
     <div className="animate-fade-up px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
@@ -191,25 +194,38 @@ export function ReviewerProfilePage() {
               </section>
 
               <div className="mb-8 grid grid-cols-1 gap-3 px-6 sm:grid-cols-2">
-                <Button
-                  block
-                  onClick={() => navigate('/submissions/new')}
-                  size="lg"
-                  variant="primary"
-                >
-                  Request Review
-                </Button>
-                <Card className="flex items-start justify-between gap-4 border-slate-200 bg-slate-50 p-4 sm:items-center" surface="subtle">
-                  <div>
-                    <div className="text-sm font-semibold text-slate-900">Support this reviewer</div>
-                    <p className="mt-1 text-sm leading-6 text-slate-500">
-                      Optional after you’ve worked with Sarah and want to show appreciation.
-                    </p>
-                  </div>
-                  <Button className="self-start sm:self-auto" onClick={() => setTipModalOpen(true)} size="sm" type="button" variant="ghost">
-                    Tip
+                {isOwnProfile ? (
+                  <Button
+                    block
+                    onClick={() => navigate('/settings/profile')}
+                    size="lg"
+                    variant="outline"
+                  >
+                    Edit tip amount
                   </Button>
-                </Card>
+                ) : (
+                  <>
+                    <Button
+                      block
+                      onClick={() => navigate('/submissions/new')}
+                      size="lg"
+                      variant="primary"
+                    >
+                      Request Review
+                    </Button>
+                    <Card className="flex items-start justify-between gap-4 border-slate-200 bg-slate-50 p-4 sm:items-center" surface="subtle">
+                      <div>
+                        <div className="text-sm font-semibold text-slate-900">Support this reviewer</div>
+                        <p className="mt-1 text-sm leading-6 text-slate-500">
+                          Optional after you’ve worked with Sarah and want to show appreciation.
+                        </p>
+                      </div>
+                      <Button className="self-start sm:self-auto" onClick={() => setTipModalOpen(true)} size="sm" type="button" variant="ghost">
+                        Tip Reviewer
+                      </Button>
+                    </Card>
+                  </>
+                )}
               </div>
 
               <div
@@ -374,30 +390,43 @@ export function ReviewerProfilePage() {
                   </Card>
 
                   <div className="space-y-3">
-                    <Button
-                      block
-                      onClick={() => navigate('/submissions/new')}
-                      size="lg"
-                      variant="primary"
-                    >
-                      Request Review
-                    </Button>
-                    <Card className="space-y-3 border-slate-200 bg-slate-50" surface="subtle">
-                      <div>
-                        <div className="text-sm font-semibold text-slate-900">Support this reviewer</div>
-                        <p className="mt-1 text-sm leading-6 text-slate-500">
-                          Tipping is optional and makes the most sense after Sarah has helped your team.
-                        </p>
-                      </div>
+                    {isOwnProfile ? (
                       <Button
                         block
-                        onClick={() => setTipModalOpen(true)}
-                        size="sm"
-                        variant="ghost"
+                        onClick={() => navigate('/settings/profile')}
+                        size="lg"
+                        variant="outline"
                       >
-                        Tip Reviewer
+                        Edit tip amount
                       </Button>
-                    </Card>
+                    ) : (
+                      <>
+                        <Button
+                          block
+                          onClick={() => navigate('/submissions/new')}
+                          size="lg"
+                          variant="primary"
+                        >
+                          Request Review
+                        </Button>
+                        <Card className="space-y-3 border-slate-200 bg-slate-50" surface="subtle">
+                          <div>
+                            <div className="text-sm font-semibold text-slate-900">Support this reviewer</div>
+                            <p className="mt-1 text-sm leading-6 text-slate-500">
+                              Tipping is optional and makes the most sense after Sarah has helped your team.
+                            </p>
+                          </div>
+                          <Button
+                            block
+                            onClick={() => setTipModalOpen(true)}
+                            size="sm"
+                            variant="ghost"
+                          >
+                            Tip Reviewer
+                          </Button>
+                        </Card>
+                      </>
+                    )}
                   </div>
                 </aside>
 

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   AlertCircle,
   CheckCircle2,
@@ -9,6 +9,7 @@ import {
   UserPlus,
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import {
   DesktopViewport,
   PhoneViewport,
@@ -40,14 +41,7 @@ const typeLabelMap: Record<NotificationItem['type'], string> = {
   system: 'System',
 }
 
-const baseNotifications: NotificationItem[] = [
-  {
-    message: 'Jordan left an inline comment on Binary Search Implementation',
-    read: false,
-    time: '2m ago',
-    tone: 'bg-indigo-100 text-indigo-600',
-    type: 'comment',
-  },
+const submitterNotifications: NotificationItem[] = [
   {
     message: 'Your submission React Hook Patterns is now IN_REVIEW',
     read: false,
@@ -61,6 +55,30 @@ const baseNotifications: NotificationItem[] = [
     time: '1h ago',
     tone: 'bg-indigo-100 text-indigo-600',
     type: 'report',
+  },
+  {
+    message: 'An inline comment anchor was modified in Quick Sort Algorithm',
+    read: true,
+    time: '5h ago',
+    tone: 'bg-yellow-100 text-yellow-600',
+    type: 'alert',
+  },
+  {
+    message: 'Your org has used 45/50 submissions this month (90%)',
+    read: true,
+    time: 'Yesterday',
+    tone: 'bg-red-100 text-red-600',
+    type: 'status',
+  },
+]
+
+const reviewerNotifications: NotificationItem[] = [
+  {
+    message: 'Jordan left an inline comment on Binary Search Implementation',
+    read: false,
+    time: '2m ago',
+    tone: 'bg-indigo-100 text-indigo-600',
+    type: 'comment',
   },
   {
     message: 'You were assigned to review State Machine Refactor',
@@ -245,12 +263,23 @@ function NotificationFilters({
 
 export function NotificationsPage() {
   const navigate = useNavigate()
-  const [notifications, setNotifications] = useState<NotificationItem[]>(baseNotifications)
+  const { isSubmitter } = useAuth()
+  const [notifications, setNotifications] = useState<NotificationItem[]>(
+    isSubmitter ? submitterNotifications : reviewerNotifications,
+  )
   const [filter, setFilter] = useState<NotificationFilter>('all')
   const [checking, setChecking] = useState(false)
   const [latestKey, setLatestKey] = useState<string | null>(null)
   const [undoSnapshot, setUndoSnapshot] = useState<NotificationItem[] | null>(null)
   const [undoVisible, setUndoVisible] = useState(false)
+
+  useEffect(() => {
+    setNotifications(isSubmitter ? submitterNotifications : reviewerNotifications)
+    setFilter('all')
+    setLatestKey(null)
+    setUndoSnapshot(null)
+    setUndoVisible(false)
+  }, [isSubmitter])
 
   const unread = notifications.filter((item) => !item.read).length
   const filteredNotifications = notifications.filter((notification) => {
@@ -288,13 +317,21 @@ export function NotificationsPage() {
   const checkForNotifications = () => {
     setChecking(true)
     window.requestAnimationFrame(() => {
-      const next = {
-        message: 'Jordan mentioned you in the auth middleware review',
-        read: false,
-        time: 'Just now',
-        tone: 'bg-indigo-100 text-indigo-600',
-        type: 'comment' as const,
-      }
+      const next = isSubmitter
+        ? {
+            message: 'A new report is ready for State Machine Refactor',
+            read: false,
+            time: 'Just now',
+            tone: 'bg-indigo-100 text-indigo-600',
+            type: 'report' as const,
+          }
+        : {
+            message: 'Jordan mentioned you in the auth middleware review',
+            read: false,
+            time: 'Just now',
+            tone: 'bg-indigo-100 text-indigo-600',
+            type: 'comment' as const,
+          }
       setLatestKey(`${next.message}-${next.time}`)
       setNotifications((current) => [next, ...current])
       setChecking(false)
@@ -357,8 +394,9 @@ export function NotificationsPage() {
                       Stay on top of review activity
                     </div>
                     <p className="mt-1 text-sm leading-6 text-slate-500">
-                      Comments, reports, assignments, and team status changes appear here
-                      as they happen.
+                      {isSubmitter
+                        ? 'Reports, submission status changes, and org alerts appear here as they happen.'
+                        : 'Assignments, inline comments, and review handoffs appear here as they happen.'}
                     </p>
                   </div>
                   <Badge variant="neutral">Live</Badge>
@@ -438,14 +476,15 @@ export function NotificationsPage() {
                   <div className="border-b border-gray-100 bg-slate-50 px-6 py-4">
                     <div className="flex items-center justify-between gap-4">
                       <div>
-                        <div className="text-sm font-semibold text-slate-900">
-                          Stay on top of review activity
-                        </div>
-                        <p className="mt-1 text-sm leading-6 text-slate-500">
-                          Critical actions are kept in view while the rest of the stream
-                          stays easy to scan on wider screens.
-                        </p>
+                      <div className="text-sm font-semibold text-slate-900">
+                        Stay on top of review activity
                       </div>
+                      <p className="mt-1 text-sm leading-6 text-slate-500">
+                          {isSubmitter
+                            ? 'Status changes, report delivery, and quota alerts stay visible while the rest of the stream stays easy to scan.'
+                            : 'Assignments and comment activity stay visible while the rest of the stream stays easy to scan.'}
+                      </p>
+                    </div>
                       <Button
                         disabled={unread === 0}
                         onClick={markAllRead}
@@ -532,11 +571,13 @@ export function NotificationsPage() {
                       </Button>
                       <Button
                         block
-                        onClick={() => navigate('/reviews/402')}
+                        onClick={() =>
+                          navigate(isSubmitter ? '/submissions/402' : '/reviews/402')
+                        }
                         type="button"
                         variant="primary"
                       >
-                        Open active review
+                        {isSubmitter ? 'Open latest submission' : 'Open active review'}
                       </Button>
                     </div>
                   </div>

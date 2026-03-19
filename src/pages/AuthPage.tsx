@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Check, Code2, Eye, EyeOff, Github, ShieldCheck } from 'lucide-react'
+import { Check, Code2, Eye, EyeOff, Github } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import { ScreenCanvas } from '../components/showcase'
-import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { Field, Input } from '../components/ui/Field'
@@ -11,6 +11,7 @@ import { cn } from '../lib/cn'
 
 export function AuthPage() {
   const navigate = useNavigate()
+  const auth = useAuth()
   const [currentTab, setCurrentTab] = useState<'login' | 'register'>('login')
   const [selectedRole, setSelectedRole] = useState<'submitter' | 'reviewer'>(
     'submitter',
@@ -25,6 +26,8 @@ export function AuthPage() {
     setLoading(true)
     window.requestAnimationFrame(() => {
       setLoading(false)
+      const role = selectedRole === 'reviewer' ? 'REVIEWER' : 'SUBMITTER'
+      auth.login(role)
       navigate(currentTab === 'login' ? '/dashboard' : '/onboarding')
     })
   }
@@ -53,20 +56,6 @@ export function AuthPage() {
                   Secure access for your review workspace
                 </p>
               </div>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-              {[
-                'Single sign-on with GitHub for faster setup',
-                'Workspace permissions stay tied to your team',
-                'Encrypted sessions and device-safe authentication',
-              ].map((item) => (
-                <div
-                  key={item}
-                  className="surface-subtle rounded-2xl border border-neutral-200 px-4 py-3 text-sm leading-6 text-text-body"
-                >
-                  {item}
-                </div>
-              ))}
             </div>
           </header>
 
@@ -107,19 +96,17 @@ export function AuthPage() {
             </div>
 
             <section className="space-y-3">
-              <div className="surface-brand-soft flex items-center justify-between gap-3 rounded-2xl border border-brand-100 px-4 py-3">
-                <div>
-                  <div className="text-sm font-semibold text-text-strong">Recommended</div>
-                  <p className="mt-1 text-sm leading-6 text-text-body">
-                    Use GitHub to connect your code context and get into reviews faster.
-                  </p>
-                </div>
-                <Badge variant="brand">Fastest</Badge>
-              </div>
+              <p className="text-sm leading-6 text-text-muted">
+                Use GitHub for the fastest sign-in, or continue with email if your
+                workspace requires it.
+              </p>
               <Button
                 block
                 leadingIcon={<Github className="h-5 w-5" />}
-                onClick={() => navigate(currentTab === 'login' ? '/dashboard' : '/onboarding')}
+                onClick={() => {
+                  auth.login('SUBMITTER')
+                  navigate(currentTab === 'login' ? '/dashboard' : '/onboarding')
+                }}
                 type="button"
                 variant="primary"
               >
@@ -193,6 +180,46 @@ export function AuthPage() {
                 </div>
               </div>
 
+              <div className="space-y-2 pt-2">
+                <span className="ml-1 text-xs uppercase tracking-[0.18em] text-text-muted">
+                  Continue as
+                </span>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {(['submitter', 'reviewer'] as const).map((role) => {
+                    const active = selectedRole === role
+                    return (
+                      <Card
+                        key={role}
+                        className={cn(
+                          'cursor-pointer border p-3 text-left text-text-strong',
+                          active
+                            ? 'border-brand surface-brand-soft'
+                            : 'border-neutral-200 bg-white hover:border-brand-200',
+                        )}
+                        elevated={active}
+                        onClick={() => setSelectedRole(role)}
+                      >
+                        <div className="mb-3 text-brand">
+                          {role === 'submitter' ? (
+                            <Check className="h-4 w-4" />
+                          ) : (
+                            <Code2 className="h-4 w-4" />
+                          )}
+                        </div>
+                        <div className="text-sm font-semibold">
+                          {role === 'submitter' ? 'Submitter' : 'Reviewer'}
+                        </div>
+                        <div className="mt-1 text-sm leading-5 text-text-muted sm:text-xs">
+                          {role === 'submitter'
+                            ? 'Request reviews for your code.'
+                            : 'Audit and approve PR submissions.'}
+                        </div>
+                      </Card>
+                    )
+                  })}
+                </div>
+              </div>
+
               {isRegister && (
                 <div className="animate-fade-up space-y-4">
                   <Field
@@ -223,45 +250,6 @@ export function AuthPage() {
                     />
                   </Field>
 
-                  <div className="space-y-2 pt-2">
-                    <span className="ml-1 text-xs uppercase tracking-[0.18em] text-text-muted">
-                      Choose Role
-                    </span>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      {(['submitter', 'reviewer'] as const).map((role) => {
-                        const active = selectedRole === role
-                        return (
-                          <Card
-                            key={role}
-                            className={cn(
-                              'cursor-pointer border p-3 text-left text-text-strong',
-                              active
-                                ? 'border-brand surface-brand-soft'
-                                : 'border-neutral-200 bg-white hover:border-brand-200',
-                            )}
-                            elevated={active}
-                            onClick={() => setSelectedRole(role)}
-                          >
-                            <div className="mb-3 text-brand">
-                              {role === 'submitter' ? (
-                                <Check className="h-4 w-4" />
-                              ) : (
-                                <Code2 className="h-4 w-4" />
-                              )}
-                            </div>
-                            <div className="text-sm font-semibold">
-                              {role === 'submitter' ? 'Submitter' : 'Reviewer'}
-                            </div>
-                            <div className="mt-1 text-sm leading-5 text-text-muted sm:text-xs">
-                              {role === 'submitter'
-                                ? 'Request reviews for your code.'
-                                : 'Audit and approve PR submissions.'}
-                            </div>
-                          </Card>
-                        )
-                      })}
-                    </div>
-                  </div>
                 </div>
               )}
 
@@ -286,13 +274,6 @@ export function AuthPage() {
               </div>
             </form>
           </div>
-
-          <footer className="border-t border-neutral-200 surface-subtle px-4 py-4 text-center sm:p-4">
-            <div className="inline-flex items-center gap-2 text-xs text-text-muted">
-              <ShieldCheck className="h-4 w-4 text-brand-500" />
-              Protected with encrypted sessions and workspace access controls
-            </div>
-          </footer>
         </div>
         <Toast message={authMessage ?? ''} visible={Boolean(authMessage)} />
       </ScreenCanvas>

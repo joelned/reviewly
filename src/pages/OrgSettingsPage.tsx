@@ -9,6 +9,7 @@ import {
   Search,
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import {
   Avatar,
   DesktopViewport,
@@ -34,6 +35,7 @@ const tabLabels = {
 
 export function OrgSettingsPage() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [activeTab, setActiveTab] =
     useState<(typeof tabs)[number]>('general')
   const [keyModalOpen, setKeyModalOpen] = useState(false)
@@ -45,6 +47,13 @@ export function OrgSettingsPage() {
   const [toast, setToast] = useState<string | null>(null)
   const [avatarFileName, setAvatarFileName] = useState('')
   const avatarInputRef = useRef<HTMLInputElement>(null)
+  const initials =
+    user?.displayName
+      .split(' ')
+      .map((part) => part[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2) ?? 'EM'
 
   const showToast = (message: string) => {
     setToast(message)
@@ -121,7 +130,7 @@ export function OrgSettingsPage() {
                 >
                   <Bell className="h-5 w-5" />
                 </Button>
-                <AccountMenu initials="AC" />
+                <AccountMenu initials={initials} />
               </div>
             </WorkspaceShell>
             <nav className="hide-scrollbar flex gap-4 overflow-x-auto px-4 text-sm font-medium text-text-muted sm:gap-6 lg:hidden">

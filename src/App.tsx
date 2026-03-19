@@ -7,6 +7,8 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom'
+import { ProtectedRoute } from './components/layout/ProtectedRoute'
+import { ReviewerOnlyRoute } from './components/layout/ReviewerOnlyRoute'
 import { AuthPage } from './pages/AuthPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { FeedbackReportPage } from './pages/FeedbackReportPage'
@@ -90,16 +92,81 @@ function AppRoutes() {
         <Route path="/login" element={<Navigate to="/auth" replace />} />
         <Route path="/register" element={<Navigate to="/auth" replace />} />
         <Route path="/onboarding" element={<OnboardingPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/home" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/submissions/new" element={<NewSubmissionPage />} />
-        <Route path="/submissions/402" element={<SubmissionDetailPage />} />
-        <Route path="/reviews/402" element={<ReviewMobilePage />} />
-        <Route path="/reports/402" element={<FeedbackReportPage />} />
-        <Route path="/notifications" element={<NotificationsPage />} />
-        <Route path="/reviewers/sarah-connor" element={<ReviewerProfilePage />} />
-        <Route path="/settings/profile" element={<ProfileSettingsPage />} />
-        <Route path="/settings/organization" element={<OrgSettingsPage />} />
+        <Route
+          path="/submissions/new"
+          element={
+            <ProtectedRoute>
+              <NewSubmissionPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/submissions/402"
+          element={
+            <ProtectedRoute>
+              <SubmissionDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reviews/402"
+          element={
+            <ProtectedRoute>
+              <ReviewerOnlyRoute>
+                <ReviewMobilePage />
+              </ReviewerOnlyRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reports/402"
+          element={
+            <ProtectedRoute>
+              <FeedbackReportPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <NotificationsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reviewers/sarah-connor"
+          element={
+            <ProtectedRoute>
+              <ReviewerProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings/profile"
+          element={
+            <ProtectedRoute>
+              <ProfileSettingsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings/organization"
+          element={
+            <ProtectedRoute>
+              <OrgSettingsPage />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/submissions/detail-desktop"
