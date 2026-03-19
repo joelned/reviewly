@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, type PropsWithChildren, type ReactNode } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '../../lib/cn'
+import { Button } from './Button'
 
 function getFocusableElements(container: HTMLElement | null) {
   if (!container) return []
@@ -80,22 +81,24 @@ export function Sheet({
       tabIndex={-1}
     >
       <div className="flex justify-center pb-2 pt-3">
-        <div className="h-1.5 w-10 rounded-full bg-gray-300" />
+        <div className="h-1.5 w-10 rounded-full bg-neutral-300" />
       </div>
       {title || onClose ? (
-        <div className="flex items-center justify-between border-b border-gray-100 px-5 pb-4">
-          <div className="text-lg font-semibold text-gray-900" id={titleId}>
+        <div className="flex items-center justify-between border-b border-neutral-100 px-5 pb-4">
+          <div className="text-lg font-semibold text-text-strong" id={titleId}>
             {title}
           </div>
           {onClose ? (
-            <button
+            <Button
               aria-label="Close sheet"
-              className="touch-target inline-flex items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+              className="text-text-muted hover:bg-neutral-100 hover:text-text-strong"
               onClick={onClose}
+              size="icon"
               type="button"
+              variant="ghost"
             >
               <X className="h-5 w-5" />
-            </button>
+            </Button>
           ) : null}
         </div>
       ) : null}

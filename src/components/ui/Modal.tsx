@@ -99,13 +99,13 @@ export function Modal({
           tabIndex={-1}
         >
         {title ? (
-          <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
-            <div className="text-lg font-semibold text-slate-900" id={titleId}>
+          <div className="flex items-center justify-between border-b border-neutral-100 px-6 py-4">
+            <div className="text-lg font-semibold text-text-strong" id={titleId}>
               {title}
             </div>
             <Button
               aria-label="Close dialog"
-              className="text-slate-400 hover:text-slate-700"
+              className="text-text-muted hover:text-text-strong"
               onClick={onClose}
               size="icon"
               type="button"

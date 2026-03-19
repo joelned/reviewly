@@ -23,13 +23,13 @@ export function ProfileSettingsPage() {
   return (
     <div className="animate-fade-up px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <ScreenCanvas className="bg-transparent p-0">
-        <DesktopViewport className="min-h-[calc(100svh-3rem)] bg-slate-50">
-          <header className="border-b border-slate-200 bg-white">
+        <DesktopViewport className="min-h-[calc(100svh-3rem)] surface-page">
+          <header className="border-b border-neutral-200 bg-white">
             <WorkspaceShell wide className="flex items-center justify-between gap-4 px-4 py-4 lg:px-6">
               <div className="flex min-w-0 items-center gap-3">
                 <Button
                   aria-label="Go back"
-                  className="text-slate-700"
+                  className="text-text-body"
                   onClick={() => navigate('/dashboard')}
                   size="icon"
                   type="button"
@@ -38,8 +38,8 @@ export function ProfileSettingsPage() {
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
                 <div>
-                  <div className="text-sm text-slate-500">Account</div>
-                  <h1 className="text-xl font-semibold tracking-tight text-slate-950">
+                  <div className="text-sm text-text-muted">Account</div>
+                  <h1 className="text-2xl font-bold tracking-tight text-text-strong">
                     Profile Settings
                   </h1>
                 </div>
@@ -61,21 +61,21 @@ export function ProfileSettingsPage() {
                 <Card elevated className="space-y-4">
                   <div className="flex flex-col items-center text-center">
                     <Avatar className="h-24 w-24 text-2xl" initials="EM" />
-                    <div className="mt-4 text-xl font-semibold text-slate-950">{displayName}</div>
-                    <div className="mt-1 text-sm text-slate-500">@{githubHandle || 'github-handle'}</div>
+                    <div className="mt-4 text-xl font-semibold text-text-strong">{displayName}</div>
+                    <div className="mt-1 text-sm text-text-muted">@{githubHandle || 'github-handle'}</div>
                   </div>
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                  <div className="rounded-2xl border border-neutral-200 surface-subtle px-4 py-3">
+                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-text-muted">
                       Public preview
                     </div>
-                    <p className="mt-2 text-sm leading-6 text-slate-500">
+                    <p className="mt-2 text-sm leading-6 text-text-body">
                       This is the profile teammates and requesters will recognize when they browse reviewers.
                     </p>
                   </div>
                 </Card>
 
                 <Card elevated className="space-y-3">
-                  <div className="text-sm font-semibold text-slate-900">Related settings</div>
+                  <div className="text-sm font-semibold text-text-strong">Related settings</div>
                   <Button block onClick={() => navigate('/settings/organization')} type="button" variant="outline">
                     Organization settings
                   </Button>
@@ -89,10 +89,10 @@ export function ProfileSettingsPage() {
                 <Card elevated className="space-y-6">
                   <div>
                     <Badge variant="brand">Personal profile</Badge>
-                    <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">
+                    <h2 className="mt-3 text-2xl font-bold tracking-tight text-text-strong">
                       Keep your reviewer identity current
                     </h2>
-                    <p className="mt-2 max-w-[60ch] text-sm leading-6 text-slate-500">
+                    <p className="mt-2 max-w-[60ch] text-sm leading-6 text-text-body">
                       Update the fields teammates rely on when they decide whether you are the right reviewer for a request.
                     </p>
                   </div>
@@ -104,7 +104,7 @@ export function ProfileSettingsPage() {
                   <Field
                     label={
                       <span className="flex items-center gap-2">
-                        <Github className="h-4 w-4 text-slate-400" />
+                        <Github className="h-4 w-4 text-text-muted" />
                         GitHub Handle
                       </span>
                     }
@@ -116,7 +116,7 @@ export function ProfileSettingsPage() {
                     hint="A short summary of the work you are best at reviewing."
                     label={
                       <span className="flex items-center gap-2">
-                        <UserCircle2 className="h-4 w-4 text-slate-400" />
+                        <UserCircle2 className="h-4 w-4 text-text-muted" />
                         Bio
                       </span>
                     }

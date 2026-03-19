@@ -76,35 +76,32 @@ export function FeedbackReportPage() {
   return (
     <div className="animate-fade-up px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <ScreenCanvas className="bg-transparent p-0">
-        <DesktopViewport className="bg-white text-slate-900">
+        <DesktopViewport className="bg-white text-text-strong">
           <WorkspaceShell wide className="px-4 py-8 sm:px-6 sm:py-10 md:px-8 xl:px-10">
-          <main className="radius-shell-lg relative min-h-[calc(100svh-3rem)] bg-white px-4 py-8 shadow-xl sm:px-6 sm:py-10 md:px-10 md:py-12 xl:px-12">
-            <header className="mb-8 flex flex-col items-start justify-between gap-6 border-b border-slate-100 pb-8 md:flex-row">
+          <main className="radius-shell-lg relative min-h-[calc(100svh-3rem)] bg-white px-4 py-8 shadow-soft sm:px-6 sm:py-10 md:px-10 md:py-12 xl:px-12">
+            <header className="mb-8 flex flex-col items-start justify-between gap-6 border-b border-neutral-100 pb-8 md:flex-row">
               <ReadingColumn className="space-y-2">
                 <div className="mb-4 flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded bg-reviewly-indigo font-bold text-white">
-                    R
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-white">
+                    <Code2 className="h-4 w-4" />
                   </div>
                   <span className="text-xl font-bold tracking-tight">
                     Reviewly.
                   </span>
                 </div>
-                <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+                <h1 className="text-3xl font-bold tracking-tight text-text-strong">
                   User Authentication Refactor
                 </h1>
-                <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500">
+                <div className="flex flex-wrap items-center gap-3 text-sm text-text-muted">
                   <span className="flex items-center gap-1">
                     <User className="h-4 w-4" />
                     Alex Rivers
                   </span>
-                  <span className="rounded bg-slate-100 px-2 py-0.5 font-mono text-xs">
+                  <span className="rounded bg-neutral-100 px-2 py-0.5 font-mono text-xs">
                     TypeScript
                   </span>
                   <span>Oct 24, 2023</span>
-                  <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-                    <span className="mr-1.5 h-2 w-2 rounded-full bg-green-500" />
-                    COMPLETED
-                  </span>
+                  <Badge variant="success">COMPLETED</Badge>
                 </div>
               </ReadingColumn>
 
@@ -129,10 +126,10 @@ export function FeedbackReportPage() {
             <Card className="mb-10" surface="subtle">
               <div className="grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_280px] xl:items-center">
                 <div>
-                  <div className="text-sm font-semibold text-slate-900">
+                  <h2 className="text-lg font-semibold text-text-strong">
                     Executive summary
-                  </div>
-                  <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">
+                  </h2>
+                  <p className="mt-2 max-w-3xl text-sm leading-6 text-text-body">
                     The submission was reviewed positively overall, with strong marks in
                     security and readability. The main follow-up areas are loading-state
                     UX and token-storage safety.
@@ -149,17 +146,17 @@ export function FeedbackReportPage() {
                 className="mb-6"
                 title={
                   <span className="flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5 text-reviewly-indigo" />
+                    <BarChart3 className="h-5 w-5 text-brand" />
                     Assessment Overview
                   </span>
                 }
               />
-              <Card className="grid items-center gap-6 rounded-3xl p-4 sm:p-6 md:grid-cols-[0.8fr_1.2fr] md:gap-8 md:p-8" surface="subtle">
+              <Card className="grid items-center gap-6 p-4 sm:p-6 md:grid-cols-[0.8fr_1.2fr] md:gap-8 md:p-8" surface="subtle">
                 <div className="flex flex-col items-center justify-center">
                   <div className="relative h-32 w-32">
                     <svg className="h-full w-full -rotate-90">
                       <circle
-                        className="text-slate-200"
+                        className="text-neutral-200"
                         cx="64"
                         cy="64"
                         fill="transparent"
@@ -168,7 +165,7 @@ export function FeedbackReportPage() {
                         strokeWidth="8"
                       />
                       <circle
-                        className="text-reviewly-indigo"
+                        className="text-brand"
                         cx="64"
                         cy="64"
                         fill="transparent"
@@ -184,7 +181,7 @@ export function FeedbackReportPage() {
                       <span className="text-3xl font-bold">7.8</span>
                     </div>
                   </div>
-                  <p className="mt-2 text-sm font-medium uppercase tracking-[0.22em] text-slate-500">
+                  <p className="mt-2 text-sm font-medium uppercase tracking-[0.22em] text-text-muted">
                     Overall Score
                   </p>
                 </div>
@@ -196,16 +193,12 @@ export function FeedbackReportPage() {
                     ['Security', '9.0', 'Excellent credential handling and sanitization.'],
                     ['Testability', '6.5', 'Missing edge case coverage for token expiry.'],
                   ].map(([title, score, body]) => (
-                    <Card
-                      key={title}
-                      className="border-slate-200 bg-white"
-                      surface="default"
-                    >
+                    <Card key={title} elevated surface="default">
                       <div className="mb-1 flex items-center justify-between">
-                        <span className="text-xs font-semibold uppercase text-slate-400">
+                        <span className="text-xs font-semibold uppercase tracking-[0.18em] text-text-muted">
                           {title}
                         </span>
-                        <span className="text-sm font-bold text-slate-900">
+                        <span className="text-sm font-bold text-text-strong">
                           {score}
                         </span>
                       </div>
@@ -217,12 +210,12 @@ export function FeedbackReportPage() {
                               'h-3 w-3',
                               index < 4 || title === 'Security'
                                 ? 'fill-current'
-                                : 'text-slate-200',
+                                : 'text-neutral-200',
                             )}
                           />
                         ))}
                       </div>
-                      <p className="text-xs leading-5 text-slate-500">
+                      <p className="text-xs leading-6 text-text-body">
                         {body}
                       </p>
                     </Card>
@@ -233,7 +226,7 @@ export function FeedbackReportPage() {
 
             <section className="mb-12">
               <h2 className="mb-6 flex items-center gap-2 text-lg font-semibold">
-                <Users className="h-5 w-5 text-reviewly-indigo" />
+                <Users className="h-5 w-5 text-brand" />
                 Reviewer Feedback
               </h2>
               <div className="space-y-4">
@@ -242,13 +235,13 @@ export function FeedbackReportPage() {
                   return (
                     <Card
                       key={reviewer.name}
-                      className="overflow-hidden border-slate-200 bg-white"
+                      className="overflow-hidden border-neutral-200 bg-white"
                       padding="none"
                       surface="default"
                     >
                       <Button
                         block
-                        className="justify-between bg-white p-4 text-left text-slate-900 hover:bg-slate-50 hover:text-slate-900"
+                        className="justify-between bg-white p-4 text-left text-text-strong hover:bg-neutral-50 hover:text-text-strong"
                         onClick={() => toggle(reviewer.name)}
                         type="button"
                         variant="ghost"
@@ -256,8 +249,8 @@ export function FeedbackReportPage() {
                         <div className="flex items-center gap-4">
                           <Avatar className="h-10 w-10" initials={reviewer.initials} />
                           <div>
-                            <h3 className="text-sm font-bold">{reviewer.name}</h3>
-                            <p className="text-xs text-slate-500">
+                            <h3 className="text-base font-semibold text-text-strong">{reviewer.name}</h3>
+                            <p className="text-xs text-text-muted">
                               {reviewer.role}
                             </p>
                           </div>
@@ -268,19 +261,19 @@ export function FeedbackReportPage() {
                           </Badge>
                           <ChevronDown
                             className={cn(
-                              'h-5 w-5 text-slate-400 transition',
+                              'h-5 w-5 text-text-muted transition',
                               isOpen && 'rotate-180',
                             )}
                           />
                         </div>
                       </Button>
                       {isOpen && (
-                        <div className="border-t border-slate-200 bg-slate-50 p-6">
-                          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                            <p className="text-sm leading-relaxed text-slate-700">
+                        <div className="surface-subtle border-t border-neutral-200 p-6">
+                          <Card className="p-4" surface="default">
+                            <p className="text-sm leading-6 text-text-body">
                               {reviewer.body}
                             </p>
-                          </div>
+                          </Card>
                         </div>
                       )}
                     </Card>
@@ -291,7 +284,7 @@ export function FeedbackReportPage() {
 
             <section className="mb-12">
               <h2 className="mb-6 flex items-center gap-2 text-lg font-semibold">
-                <MessageSquare className="h-5 w-5 text-reviewly-indigo" />
+                <MessageSquare className="h-5 w-5 text-brand" />
                 Annotated Comments
               </h2>
               <div className="space-y-6">
@@ -311,15 +304,15 @@ export function FeedbackReportPage() {
                 ].map(([line, meta, status, body], index) => (
                   <Card
                     key={line}
-                    className="relative overflow-hidden border-slate-200 bg-white"
+                    className="relative overflow-hidden border-neutral-200 bg-white"
                     surface="default"
                   >
                     <div className="space-y-4">
                       <div className="flex items-center gap-2">
-                        <span className="rounded bg-slate-900 px-2 py-0.5 font-mono text-xs font-bold text-slate-200">
+                        <span className="surface-dark rounded px-2 py-0.5 font-mono text-xs font-bold text-neutral-200">
                           {line}
                         </span>
-                        <span className="text-xs font-medium text-slate-500">
+                        <span className="text-xs font-medium text-text-muted">
                           {meta}
                         </span>
                         <Badge
@@ -329,19 +322,19 @@ export function FeedbackReportPage() {
                           {status}
                         </Badge>
                       </div>
-                      <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                        <div className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                      <div className="rounded-2xl border border-neutral-200 surface-subtle px-4 py-3">
+                        <div className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-text-muted">
                           Evidence from file
                         </div>
                         <div className="surface-dark overflow-x-auto rounded-2xl p-4">
-                          <code className="font-mono text-xs text-indigo-300">
+                          <code className="font-mono text-xs text-neutral-300">
                             {index === 0
                               ? 'const { user, loading, error } = useAuth();\nif (loading) return <Spinner />;'
                               : "localStorage.setItem('auth_token', token);"}
                           </code>
                         </div>
                       </div>
-                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+                      <div className="rounded-2xl border border-neutral-200 surface-subtle p-4 text-sm text-text-body">
                         {body}
                       </div>
                     </div>
@@ -353,21 +346,21 @@ export function FeedbackReportPage() {
             <section className="mb-12">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="flex items-center gap-2 text-lg font-semibold">
-                  <Code2 className="h-5 w-5 text-reviewly-indigo" />
+                  <Code2 className="h-5 w-5 text-brand" />
                   File Snapshot
                 </h2>
-                <span className="font-mono text-xs text-slate-400">
+                <span className="font-mono text-xs text-text-muted">
                   src/hooks/useAuth.tsx
                 </span>
               </div>
-              <div className="overflow-hidden rounded-2xl border border-slate-200">
-                <div className="flex gap-2 border-b border-slate-200 bg-slate-50 px-4 py-2">
+              <div className="overflow-hidden rounded-2xl border border-neutral-200">
+                <div className="flex gap-2 border-b border-neutral-200 surface-subtle px-4 py-2">
                   <div className="h-3 w-3 rounded-full bg-red-400" />
                   <div className="h-3 w-3 rounded-full bg-amber-400" />
                   <div className="h-3 w-3 rounded-full bg-green-400" />
                 </div>
                 <div className="surface-dark overflow-x-auto p-6">
-                  <pre className="font-mono text-xs leading-6 text-slate-300">
+                  <pre className="font-mono text-xs leading-6 text-neutral-300">
                     1 | import {'{'} useState, useEffect {'}'} from 'react';{'\n'}
                     2 | {'\n'}
                     3 | export const useAuth = () =&gt; {'{'}{'\n'}
@@ -381,11 +374,11 @@ export function FeedbackReportPage() {
               </div>
             </section>
 
-            <Card className="mt-16 border-slate-200 bg-slate-50" surface="subtle">
+            <Card className="mt-16" surface="subtle">
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <div className="text-sm font-semibold text-slate-900">Finalize this report</div>
-                  <p className="mt-1 text-sm leading-6 text-slate-500">
+                  <div className="text-sm font-semibold text-text-strong">Finalize this report</div>
+                  <p className="mt-1 text-sm leading-6 text-text-body">
                     Share or export once you are ready to preserve this review as a clean record.
                   </p>
                 </div>

@@ -63,13 +63,13 @@ export function Dropzone({
         type="file"
       />
       <div className="flex flex-col items-center justify-center gap-3 py-6 text-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-600">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 text-text-body">
           <UploadCloud className="h-5 w-5" />
         </div>
         <div className="space-y-1">
-          <div className="text-sm font-semibold text-slate-900">{label}</div>
+          <div className="text-sm font-semibold text-text-strong">{label}</div>
           {description ? (
-            <div className="text-sm leading-6 text-slate-500">{description}</div>
+            <div className="text-sm leading-6 text-text-muted">{description}</div>
           ) : null}
         </div>
         <Button

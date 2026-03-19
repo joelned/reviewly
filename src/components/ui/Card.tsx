@@ -20,7 +20,7 @@ const paddingClasses = {
 }
 
 const surfaceClasses = {
-  dark: 'border-neutral-800 surface-dark text-slate-100',
+  dark: 'border-neutral-800 surface-dark text-neutral-100',
   default: 'border-neutral-200 bg-white text-text-strong',
   subtle: 'border-neutral-200 surface-subtle text-text-strong',
 }

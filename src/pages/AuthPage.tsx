@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Check, Code2, Eye, EyeOff, Github } from 'lucide-react'
+import { Check, Code2, Eye, EyeOff, Github, GraduationCap } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { ScreenCanvas } from '../components/showcase'
@@ -45,8 +45,8 @@ export function AuthPage() {
         <div className="radius-shell w-full max-w-[32.5rem] overflow-hidden border border-neutral-200 bg-white text-text-strong shadow-float sm:radius-shell-lg">
           <header className="border-b border-neutral-200 px-4 pb-5 pt-6 text-center sm:px-8 sm:pb-6 sm:pt-10">
             <div className="mb-4 flex items-center justify-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand text-white shadow-md shadow-brand/20">
-                <Code2 className="h-6 w-6" />
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand text-white shadow-md shadow-brand/20">
+                <Code2 className="h-7 w-7" />
               </div>
               <div className="text-left">
                 <h1 className="text-2xl font-bold tracking-tight text-text-strong">
@@ -57,6 +57,9 @@ export function AuthPage() {
                 </p>
               </div>
             </div>
+            <p className="text-center text-sm text-text-muted">
+              Used by 2,000+ engineers for structured async code review
+            </p>
           </header>
 
           <nav className="relative mt-2 flex border-b border-neutral-200 px-4 sm:mt-4 sm:px-8">
@@ -64,7 +67,7 @@ export function AuthPage() {
               <button
                 key={tab}
                 className={cn(
-                  'touch-target flex-1 py-3 text-sm font-medium transition sm:py-4',
+                  'touch-target flex-1 py-4 text-sm font-medium transition',
                   currentTab === tab
                     ? 'text-text-strong'
                     : 'text-text-muted hover:text-text-strong',
@@ -77,7 +80,7 @@ export function AuthPage() {
             ))}
             <div
               className={cn(
-                'absolute bottom-0 h-0.5 w-1/2 bg-brand transition-transform duration-300',
+                'absolute bottom-0 h-[3px] w-1/2 bg-brand transition-transform duration-300',
                 currentTab === 'login' ? 'translate-x-0' : 'translate-x-full',
               )}
             />
@@ -107,13 +110,14 @@ export function AuthPage() {
                   auth.login('SUBMITTER')
                   navigate(currentTab === 'login' ? '/dashboard' : '/onboarding')
                 }}
+                size="lg"
                 type="button"
-                variant="primary"
+                variant="secondary"
               >
                 Continue with GitHub
               </Button>
 
-              <div className="my-8 flex items-center text-neutral-200">
+              <div className="my-6 flex items-center text-neutral-200">
                 <div className="flex-1 border-t border-neutral-200" />
                 <span className="px-4 text-xs uppercase tracking-[0.18em] text-text-muted">
                   Or use email instead
@@ -130,36 +134,32 @@ export function AuthPage() {
               }}
             >
               <Field
-                label={
-                  <span className="text-xs uppercase tracking-[0.18em] text-text-muted">
-                    Email Address
-                  </span>
-                }
+                label="Email Address"
               >
                 <Input
-                  className="border-neutral-200 surface-subtle text-text-strong placeholder:text-neutral-400 focus:border-brand"
                   placeholder="you@company.com"
                   type="email"
                 />
               </Field>
 
-              <div className="space-y-1">
-                <div className="flex items-center justify-between px-1">
-                  <span className="text-xs uppercase tracking-[0.18em] text-text-muted">
-                    Password
-                  </span>
-                  <Button
-                    className="min-h-[32px] px-2 py-1 text-xs uppercase tracking-[0.18em] text-text-muted hover:bg-transparent hover:text-text-strong"
-                    onClick={handleForgotPassword}
-                    type="button"
-                    variant="ghost"
-                  >
-                    Forgot password?
-                  </Button>
-                </div>
+              <Field
+                label={
+                  <div className="flex items-center justify-between gap-3">
+                    <span>Password</span>
+                    <Button
+                      className="min-h-[32px] px-2 py-1 text-xs text-text-muted hover:bg-transparent hover:text-text-strong"
+                      onClick={handleForgotPassword}
+                      type="button"
+                      variant="ghost"
+                    >
+                      Forgot password?
+                    </Button>
+                  </div>
+                }
+              >
                 <div className="relative">
                   <Input
-                    className="border-neutral-200 surface-subtle pr-11 text-text-strong focus:border-brand"
+                    className="pr-11"
                     placeholder="Enter your password"
                     type={showPassword ? 'text' : 'password'}
                   />
@@ -178,42 +178,47 @@ export function AuthPage() {
                     )}
                   </Button>
                 </div>
-              </div>
+              </Field>
 
-              <div className="space-y-2 pt-2">
-                <span className="ml-1 text-xs uppercase tracking-[0.18em] text-text-muted">
-                  Continue as
-                </span>
+              <div className="space-y-3 pt-2">
+                <span className="ml-1 text-sm font-medium text-text-body">Continue as</span>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {(['submitter', 'reviewer'] as const).map((role) => {
                     const active = selectedRole === role
                     return (
                       <Card
+                        aria-checked={active}
                         key={role}
                         className={cn(
-                          'cursor-pointer border p-3 text-left text-text-strong',
+                          'relative cursor-pointer border p-4 text-left text-text-strong',
                           active
-                            ? 'border-brand surface-brand-soft'
+                            ? 'border-brand bg-brand-50/50'
                             : 'border-neutral-200 bg-white hover:border-brand-200',
                         )}
                         elevated={active}
                         onClick={() => setSelectedRole(role)}
+                        role="radio"
                       >
+                        {active ? (
+                          <div className="absolute right-4 top-4">
+                            <Check className="h-4 w-4 text-brand" />
+                          </div>
+                        ) : null}
                         <div className="mb-3 text-brand">
                           {role === 'submitter' ? (
-                            <Check className="h-4 w-4" />
+                            <GraduationCap className="h-5 w-5" />
                           ) : (
-                            <Code2 className="h-4 w-4" />
+                            <Eye className="h-5 w-5" />
                           )}
                         </div>
-                        <div className="text-sm font-semibold">
+                        <h3 className="text-base font-semibold text-text-strong">
                           {role === 'submitter' ? 'Submitter' : 'Reviewer'}
-                        </div>
-                        <div className="mt-1 text-sm leading-5 text-text-muted sm:text-xs">
+                        </h3>
+                        <p className="mt-1 text-sm leading-6 text-text-body">
                           {role === 'submitter'
                             ? 'Request reviews for your code.'
                             : 'Audit and approve PR submissions.'}
-                        </div>
+                        </p>
                       </Card>
                     )
                   })}
@@ -222,29 +227,15 @@ export function AuthPage() {
 
               {isRegister && (
                 <div className="animate-fade-up space-y-4">
-                  <Field
-                    label={
-                      <span className="text-xs uppercase tracking-[0.18em] text-text-muted">
-                        Username
-                      </span>
-                    }
-                  >
+                  <Field label="Username">
                     <Input
-                      className="border-neutral-200 surface-subtle text-text-strong placeholder:text-neutral-400 focus:border-brand"
                       placeholder="gh_handle"
                       type="text"
                     />
                   </Field>
 
-                  <Field
-                    label={
-                      <span className="text-xs uppercase tracking-[0.18em] text-text-muted">
-                        Confirm Password
-                      </span>
-                    }
-                  >
+                  <Field label="Confirm Password">
                     <Input
-                      className="border-neutral-200 surface-subtle text-text-strong focus:border-brand"
                       placeholder="Confirm your password"
                       type="password"
                     />
@@ -261,17 +252,8 @@ export function AuthPage() {
                 type="submit"
                 variant="primary"
               >
-                {isRegister ? 'Create account with email' : 'Sign in with email'}
+                {isRegister ? 'Create account' : 'Sign in'}
               </Button>
-              <div className="min-h-[1.5rem]">
-                {loading ? (
-                  <p className="animate-fade-in text-center text-sm text-text-muted">
-                    {currentTab === 'login'
-                      ? 'Checking your credentials...'
-                      : 'Creating your workspace account...'}
-                  </p>
-                ) : null}
-              </div>
             </form>
           </div>
         </div>

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import {
   ArrowLeft,
   Check,
+  ChevronRight,
   ChevronDown,
   CopyPlus,
   ExternalLink,
@@ -140,18 +141,20 @@ export function NewSubmissionPage() {
         <DesktopViewport className="relative overflow-hidden">
           <div className="sticky top-0 z-20 flex min-h-16 items-center justify-between border-b border-neutral-200 bg-white/90 px-4 backdrop-blur-md">
             <div className="flex min-w-0 items-center gap-3">
-              <button
+              <Button
                 aria-label="Go back"
-                className="rounded-full p-2 transition hover:bg-neutral-100"
+                className="text-text-body"
                 onClick={() => navigate('/dashboard')}
+                size="icon"
                 type="button"
+                variant="ghost"
               >
                 <ArrowLeft className="h-5 w-5" />
-              </button>
+              </Button>
               <div className="min-w-0">
-                <div className="flex text-xs text-text-muted">
+                <div className="flex items-center text-xs text-text-muted">
                   <span>Dashboard</span>
-                  <span className="mx-1">/</span>
+                  <ChevronRight className="mx-1 h-3 w-3 text-text-muted" />
                   <span className="font-medium text-text-strong">
                     New Submission
                   </span>
@@ -338,6 +341,8 @@ export function NewSubmissionPage() {
                         }
                       >
                         <Textarea
+                          autoCapitalize="off"
+                          autoCorrect="off"
                           onChange={(event) => setDescription(event.target.value)}
                           placeholder="Explain the goal, the risky parts, and the kind of feedback you want."
                           rows={5}
@@ -391,10 +396,13 @@ export function NewSubmissionPage() {
                             </div>
                             <textarea
                               aria-describedby="submission-code-hint"
+                              autoCapitalize="off"
+                              autoCorrect="off"
                               className="min-h-[320px] w-full resize-none border-0 bg-transparent p-4 font-mono text-sm leading-6 outline-none placeholder:text-neutral-400"
                               id="submission-code"
                               onChange={(event) => setCode(event.target.value)}
                               placeholder="Paste the focused code snippet you want reviewed..."
+                              spellCheck={false}
                               value={code}
                             />
                           </div>
@@ -465,7 +473,14 @@ export function NewSubmissionPage() {
                         value={card.value}
                       />
                       <Card className="rounded-2xl border-2 border-neutral-100 transition peer-checked:border-brand peer-checked:bg-brand-50/50 peer-focus-visible:ring-2 peer-focus-visible:ring-brand peer-focus-visible:ring-offset-2">
-                        <div className="mb-2 text-brand">{card.icon}</div>
+                        <div
+                          className={cn(
+                            'mb-2 text-text-muted',
+                            visibility === card.value && 'text-brand',
+                          )}
+                        >
+                          {card.icon}
+                        </div>
                         <p className="text-sm font-bold">{card.title}</p>
                         <p className="mt-1 text-xs text-text-muted">
                           {card.body}
@@ -553,6 +568,7 @@ export function NewSubmissionPage() {
                   {focusAreas.length > visibleFocusAreas.length ? (
                     <Button
                       className="w-fit"
+                      leadingIcon={<ChevronDown className="h-4 w-4" />}
                       onClick={() => setShowAllFocusAreas(true)}
                       type="button"
                       variant="ghost"

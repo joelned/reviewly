@@ -144,11 +144,40 @@ const mobileNavItems = [
 
 function ActiveSubmissionList({
   items,
+  isSubmitter,
   navigate,
 }: {
   items: ActiveSubmission[]
+  isSubmitter: boolean
   navigate: ReturnType<typeof useNavigate>
 }) {
+  if (items.length === 0) {
+    return (
+      <Card className="space-y-4 text-center" surface="subtle">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 text-text-body">
+          <GitPullRequest className="h-5 w-5" />
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-base font-semibold text-text-strong">
+            {isSubmitter ? 'No submissions yet' : 'No reviews assigned'}
+          </h3>
+          <p className="text-sm leading-6 text-text-body">
+            {isSubmitter
+              ? 'Start a new submission to send your next change out for async review.'
+              : 'New review assignments will show up here as soon as they land in your queue.'}
+          </p>
+        </div>
+        <Button
+          onClick={() => navigate(isSubmitter ? '/submissions/new' : '/notifications')}
+          type="button"
+          variant="primary"
+        >
+          {isSubmitter ? 'New Submission' : 'Open Notifications'}
+        </Button>
+      </Card>
+    )
+  }
+
   return (
     <>
       {items.map((submission, index) =>
@@ -156,10 +185,10 @@ function ActiveSubmissionList({
           <Card key={index} className="space-y-4">
             <div className="flex items-start justify-between">
               <div className="space-y-2">
-                <div className="h-4 w-36 animate-shimmer rounded bg-[length:200%_100%] bg-gradient-to-r from-slate-100 via-slate-50 to-slate-100" />
-                <div className="h-3 w-20 animate-shimmer rounded bg-[length:200%_100%] bg-gradient-to-r from-slate-100 via-slate-50 to-slate-100" />
+                <div className="h-4 w-36 animate-shimmer rounded-xl bg-[length:200%_100%] bg-gradient-to-r from-slate-100 via-slate-50 to-slate-100" />
+                <div className="h-3 w-20 animate-shimmer rounded-xl bg-[length:200%_100%] bg-gradient-to-r from-slate-100 via-slate-50 to-slate-100" />
               </div>
-              <div className="h-6 w-16 animate-shimmer rounded bg-[length:200%_100%] bg-gradient-to-r from-slate-100 via-slate-50 to-slate-100" />
+              <div className="h-6 w-16 animate-shimmer rounded-xl bg-[length:200%_100%] bg-gradient-to-r from-slate-100 via-slate-50 to-slate-100" />
             </div>
             <div className="flex items-center gap-2 border-t border-neutral-100 pt-2">
               <div className="h-7 w-20 animate-shimmer rounded-full bg-[length:200%_100%] bg-gradient-to-r from-slate-100 via-slate-50 to-slate-100" />
@@ -182,7 +211,7 @@ function ActiveSubmissionList({
               {submission.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded bg-neutral-100 px-2 py-1 font-mono text-xs text-text-body"
+                  className="rounded-lg bg-neutral-100 px-2 py-1 font-mono text-xs text-text-body"
                 >
                   {tag}
                 </span>
@@ -253,6 +282,10 @@ function MobileDashboard({
   reputation: number
   submissions: ActiveSubmission[]
 }) {
+  const quotaPercent = 68
+  const quotaBarColor =
+    quotaPercent >= 80 ? 'bg-danger' : quotaPercent >= 60 ? 'bg-warning-500' : 'bg-brand'
+
   return (
     <PhoneViewport className="surface-page">
       <header className="safe-top sticky top-0 z-20 flex items-center justify-between border-b border-neutral-200 bg-white/80 px-4 py-3 backdrop-blur-md">
@@ -283,7 +316,7 @@ function MobileDashboard({
                 <h1 className="text-3xl font-bold tracking-tight text-white">
                   Good morning, {displayName}
                 </h1>
-                <p className="mt-2 max-w-[20rem] text-sm leading-6 text-neutral-300">
+                <p className="mt-2 max-w-sm text-sm leading-6 text-neutral-300">
                   {isSubmitter
                     ? 'You have 3 code reviews pending today.'
                     : 'You have 3 review assignments waiting.'}
@@ -341,7 +374,7 @@ function MobileDashboard({
                     <span className="text-neutral-400">{meta}</span>
                   </div>
                   <div className="h-1.5 overflow-hidden rounded-full bg-neutral-100">
-                    <div className="h-full w-[68%] bg-brand" />
+                    <div className={cn('h-full w-[68%]', quotaBarColor)} />
                   </div>
                 </div>
               ) : (
@@ -372,7 +405,7 @@ function MobileDashboard({
             }
             title={isSubmitter ? 'Active Submissions' : 'Assigned Reviews'}
           />
-          <ActiveSubmissionList items={submissions} navigate={navigate} />
+          <ActiveSubmissionList isSubmitter={isSubmitter} items={submissions} navigate={navigate} />
         </section>
 
         <section className="space-y-4 pb-4">
@@ -381,7 +414,7 @@ function MobileDashboard({
         </section>
       </main>
 
-      <nav className="bottom-nav-shadow safe-bottom-lg fixed inset-x-0 bottom-0 z-20 mx-auto flex w-full max-w-md items-center justify-between border-t border-neutral-200 bg-white/90 px-4 py-3 backdrop-blur-xl sm:max-w-lg sm:px-6 lg:max-w-xl">
+      <nav className="bottom-nav-shadow safe-bottom-lg fixed inset-x-0 bottom-0 z-20 mx-auto flex w-full max-w-md items-center justify-between border-t border-neutral-200 bg-white/90 px-4 py-3 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl sm:max-w-lg sm:px-6 lg:max-w-xl">
         {mobileNavItems.map((item) => {
           const Icon = item.icon
           const active = item.path === '/dashboard'
@@ -537,7 +570,7 @@ function DesktopDashboard({
                       ['Reputation', `${reputation}`, 'Trust signal'],
                     ]
                 ).map(([label, value, meta]) => (
-                  <Card key={label} surface="subtle">
+                  <Card elevated key={label} surface="subtle">
                     <div className="text-sm font-medium text-text-muted">{label}</div>
                     <div className="mt-4 text-3xl font-bold tracking-tight text-text-strong">
                       {value}
@@ -562,7 +595,7 @@ function DesktopDashboard({
                 title={isSubmitter ? 'Active submissions' : 'Assigned reviews'}
               />
               <div className="grid gap-4 xl:grid-cols-2">
-                <ActiveSubmissionList items={submissions} navigate={navigate} />
+                <ActiveSubmissionList isSubmitter={isSubmitter} items={submissions} navigate={navigate} />
               </div>
             </section>
           </div>

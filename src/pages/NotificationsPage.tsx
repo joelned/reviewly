@@ -46,28 +46,28 @@ const submitterNotifications: NotificationItem[] = [
     message: 'Your submission React Hook Patterns is now IN_REVIEW',
     read: false,
     time: '15m ago',
-    tone: 'bg-green-100 text-green-600',
+    tone: 'bg-success-50 text-success-600',
     type: 'status',
   },
   {
     message: 'Review report is ready for Debounce Utility',
     read: false,
     time: '1h ago',
-    tone: 'bg-indigo-100 text-indigo-600',
+    tone: 'bg-success-50 text-success-600',
     type: 'report',
   },
   {
     message: 'An inline comment anchor was modified in Quick Sort Algorithm',
     read: true,
     time: '5h ago',
-    tone: 'bg-yellow-100 text-yellow-600',
+    tone: 'bg-warning-50 text-warning-600',
     type: 'alert',
   },
   {
     message: 'Your org has used 45/50 submissions this month (90%)',
     read: true,
     time: 'Yesterday',
-    tone: 'bg-red-100 text-red-600',
+    tone: 'bg-warning-50 text-warning-600',
     type: 'status',
   },
 ]
@@ -77,28 +77,28 @@ const reviewerNotifications: NotificationItem[] = [
     message: 'Jordan left an inline comment on Binary Search Implementation',
     read: false,
     time: '2m ago',
-    tone: 'bg-indigo-100 text-indigo-600',
+    tone: 'bg-brand-50 text-brand',
     type: 'comment',
   },
   {
     message: 'You were assigned to review State Machine Refactor',
     read: false,
     time: '3h ago',
-    tone: 'bg-indigo-100 text-indigo-600',
+    tone: 'bg-secondary-50 text-secondary-600',
     type: 'assignment',
   },
   {
     message: 'An inline comment anchor was modified in Quick Sort Algorithm',
     read: true,
     time: '5h ago',
-    tone: 'bg-yellow-100 text-yellow-600',
+    tone: 'bg-warning-50 text-warning-600',
     type: 'alert',
   },
   {
     message: 'Kofi submitted their review on Binary Search Implementation',
     read: true,
     time: 'Yesterday',
-    tone: 'bg-green-100 text-green-600',
+    tone: 'bg-success-50 text-success-600',
     type: 'status',
   },
 ]
@@ -150,17 +150,20 @@ function NotificationList({
     >
       {filteredNotifications.length === 0 ? (
         <div className="px-4 py-10 text-center sm:px-5 lg:px-6">
-          <div className="text-sm font-semibold text-slate-900">No notifications here yet</div>
-          <p className="mt-2 text-sm leading-6 text-slate-500">
-            Try another filter or check again in a moment.
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 text-text-body">
+            <CheckCircle2 className="h-5 w-5" />
+          </div>
+          <div className="mt-4 text-base font-semibold text-text-strong">You&apos;re all caught up</div>
+          <p className="mt-2 text-sm leading-6 text-text-body">
+            There&apos;s nothing in this filter right now. Try another view or check again in a moment.
           </p>
         </div>
       ) : null}
 
       {orderedGroups.map((group) => (
         <section key={group} aria-label={group}>
-          <div className="sticky top-0 z-10 border-b border-slate-100 bg-white/95 px-4 py-3 backdrop-blur-sm sm:px-5 lg:px-6">
-            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="sticky top-0 z-10 border-b border-neutral-100 bg-white/95 px-4 py-3 backdrop-blur-sm sm:px-5 lg:px-6">
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-text-muted">
               {group}
             </div>
           </div>
@@ -172,9 +175,9 @@ function NotificationList({
                 aria-label={`${notification.message}. ${notification.time}.${notification.read ? '' : ' Unread.'}`}
                 key={notificationKey}
                 className={cn(
-                  'flex cursor-pointer items-start gap-3 border-b border-gray-100 px-4 py-4 transition last:border-b-0 hover:bg-gray-50 sm:px-5 lg:px-6',
+                  'flex cursor-pointer items-start gap-3 border-b border-neutral-100 px-4 py-4 transition last:border-b-0 hover:bg-neutral-50 sm:px-5 lg:px-6',
                   !notification.read &&
-                    'border-l-4 border-l-reviewly-indigo bg-indigo-50/50 pl-3',
+                    'border-l-4 border-l-brand bg-brand-50/40 pl-3',
                   latestKey === notificationKey && 'animate-slide-down',
                 )}
                 onClick={() => onOpenNotification(notification)}
@@ -186,32 +189,29 @@ function NotificationList({
                     <Icon className="h-4 w-4" />
                   </div>
                   {!notification.read && (
-                    <span className="absolute -right-1 -top-1 h-3.5 w-3.5 rounded-full border-2 border-white bg-reviewly-indigo" />
+                    <span className="absolute -right-1 -top-1 h-3.5 w-3.5 rounded-full border-2 border-white bg-brand" />
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <Badge
-                      className="rounded-md px-2.5 py-1 text-xs font-semibold"
-                      variant={!notification.read ? 'brand' : 'neutral'}
-                    >
+                    <Badge variant={!notification.read ? 'brand' : 'neutral'}>
                       {typeLabelMap[notification.type]}
                     </Badge>
                     {!notification.read ? (
-                      <Badge className="rounded-md px-2.5 py-1 text-xs font-semibold" variant="info">
+                      <Badge variant="brand">
                         Unread
                       </Badge>
                     ) : null}
                   </div>
                   <p
                     className={cn(
-                      'mt-2 text-sm leading-6 text-gray-900',
+                      'mt-2 text-sm leading-6 text-text-strong',
                       !notification.read && 'font-semibold',
                     )}
                   >
                     {notification.message}
                   </p>
-                  <span className="mt-1 block text-sm text-gray-500">{notification.time}</span>
+                  <span className="mt-1 block text-sm text-text-muted">{notification.time}</span>
                 </div>
               </article>
             )
@@ -232,7 +232,7 @@ function NotificationFilters({
   return (
     <nav
       aria-label="Notification filters"
-      className="flex border-b border-gray-100 px-4 sm:px-5 lg:px-6"
+      className="flex border-b border-neutral-100 px-4 sm:px-5 lg:px-6"
       role="tablist"
     >
       {[
@@ -247,8 +247,8 @@ function NotificationFilters({
           className={cn(
             'px-4 py-3 text-sm font-medium transition',
             filter === value
-              ? 'border-b-2 border-reviewly-indigo text-gray-900'
-              : 'text-gray-500 hover:text-gray-700',
+              ? 'border-b-2 border-brand text-text-strong'
+              : 'text-text-muted hover:text-text-body',
           )}
           onClick={() => setFilter(value as 'all' | 'unread' | 'mentions')}
           role="tab"
@@ -322,14 +322,14 @@ export function NotificationsPage() {
             message: 'A new report is ready for State Machine Refactor',
             read: false,
             time: 'Just now',
-            tone: 'bg-indigo-100 text-indigo-600',
+            tone: 'bg-success-50 text-success-600',
             type: 'report' as const,
           }
         : {
             message: 'Jordan mentioned you in the auth middleware review',
             read: false,
             time: 'Just now',
-            tone: 'bg-indigo-100 text-indigo-600',
+            tone: 'bg-brand-50 text-brand',
             type: 'comment' as const,
           }
       setLatestKey(`${next.message}-${next.time}`)
@@ -369,7 +369,7 @@ export function NotificationsPage() {
               type="button"
             />
             <Sheet onClose={() => navigate('/dashboard')} title="Notifications">
-              <header className="flex flex-col gap-3 border-b border-gray-100 px-4 pb-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+              <header className="flex flex-col gap-3 border-b border-neutral-100 px-4 pb-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
                 <div className="flex items-center gap-2">
                   <Badge aria-label={`${unread} unread notifications`} variant="brand">
                     {unread} unread
@@ -377,7 +377,7 @@ export function NotificationsPage() {
                   {mentionCount > 0 ? <Badge variant="info">{mentionCount} mentions</Badge> : null}
                 </div>
                 <Button
-                  className="px-0 text-reviewly-indigo hover:bg-transparent"
+                  className="px-0 text-brand hover:bg-transparent"
                   disabled={unread === 0}
                   onClick={markAllRead}
                   type="button"
@@ -387,19 +387,19 @@ export function NotificationsPage() {
                 </Button>
               </header>
 
-              <div className="border-b border-gray-100 bg-slate-50 px-4 py-4 sm:px-5">
+              <div className="border-b border-neutral-100 surface-subtle px-4 py-4 sm:px-5">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <div className="text-sm font-semibold text-slate-900">
+                    <div className="text-sm font-semibold text-text-strong">
                       Stay on top of review activity
                     </div>
-                    <p className="mt-1 text-sm leading-6 text-slate-500">
+                    <p className="mt-1 text-sm leading-6 text-text-body">
                       {isSubmitter
                         ? 'Reports, submission status changes, and org alerts appear here as they happen.'
                         : 'Assignments, inline comments, and review handoffs appear here as they happen.'}
                     </p>
                   </div>
-                  <Badge variant="neutral">Live</Badge>
+                  <Badge variant="success">Live</Badge>
                 </div>
               </div>
 
@@ -410,9 +410,9 @@ export function NotificationsPage() {
               </div>
 
               {undoVisible ? (
-                <div className="border-b border-blue-100 bg-blue-50 px-4 py-3 sm:px-5">
+                <div className="border-b border-brand-100 bg-brand-50 px-4 py-3 sm:px-5">
                   <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm font-medium text-blue-900">
+                    <p className="text-sm font-medium text-text-strong">
                       All notifications marked read.
                     </p>
                     <Button onClick={undoMarkAllRead} type="button" variant="ghost">
@@ -431,7 +431,7 @@ export function NotificationsPage() {
                 />
               </div>
 
-              <div className="safe-bottom-lg border-t border-gray-100 bg-gray-50/60 px-4 py-4 sm:px-5">
+              <div className="safe-bottom-lg border-t border-neutral-100 surface-subtle px-4 py-4 sm:px-5">
                 <Button
                   block
                   leadingIcon={<RefreshCw className="h-4 w-4" />}
@@ -448,16 +448,16 @@ export function NotificationsPage() {
         </div>
 
         <div className="hidden lg:block">
-          <DesktopViewport className="bg-slate-50">
+          <DesktopViewport className="surface-page">
             <WorkspaceShell wide className="px-6 py-8">
               <div className="grid gap-8 xl:grid-cols-[minmax(0,1.4fr)_360px]">
-                <section className="radius-shell overflow-hidden border border-slate-200 bg-white shadow-soft">
-                  <header className="flex items-center justify-between border-b border-gray-100 px-6 py-5">
+                <section className="radius-shell overflow-hidden border border-neutral-200 bg-white shadow-soft">
+                  <header className="flex items-center justify-between border-b border-neutral-100 px-6 py-5">
                     <div>
-                      <h1 className="text-2xl font-semibold tracking-tight text-slate-950">
+                      <h1 className="text-2xl font-bold tracking-tight text-text-strong">
                         Notifications
                       </h1>
-                      <p className="mt-2 max-w-[38rem] text-sm leading-6 text-slate-500">
+                      <p className="mt-2 max-w-[38rem] text-sm leading-6 text-text-body">
                         A desktop inbox for review activity, team mentions, assignments,
                         and report updates.
                       </p>
@@ -473,18 +473,18 @@ export function NotificationsPage() {
                     </div>
                   </header>
 
-                  <div className="border-b border-gray-100 bg-slate-50 px-6 py-4">
+                  <div className="border-b border-neutral-100 surface-subtle px-6 py-4">
                     <div className="flex items-center justify-between gap-4">
                       <div>
-                      <div className="text-sm font-semibold text-slate-900">
-                        Stay on top of review activity
-                      </div>
-                      <p className="mt-1 text-sm leading-6 text-slate-500">
+                        <div className="text-sm font-semibold text-text-strong">
+                          Stay on top of review activity
+                        </div>
+                        <p className="mt-1 text-sm leading-6 text-text-body">
                           {isSubmitter
                             ? 'Status changes, report delivery, and quota alerts stay visible while the rest of the stream stays easy to scan.'
                             : 'Assignments and comment activity stay visible while the rest of the stream stays easy to scan.'}
-                      </p>
-                    </div>
+                        </p>
+                      </div>
                       <Button
                         disabled={unread === 0}
                         onClick={markAllRead}
@@ -503,9 +503,9 @@ export function NotificationsPage() {
                   </div>
 
                   {undoVisible ? (
-                    <div className="border-b border-blue-100 bg-blue-50 px-6 py-3">
+                    <div className="border-b border-brand-100 bg-brand-50 px-6 py-3">
                       <div className="flex items-center justify-between gap-3">
-                        <p className="text-sm font-medium text-blue-900">
+                        <p className="text-sm font-medium text-text-strong">
                           All notifications marked read.
                         </p>
                         <Button onClick={undoMarkAllRead} type="button" variant="ghost">
@@ -524,13 +524,13 @@ export function NotificationsPage() {
                 </section>
 
                 <aside className="space-y-6">
-                  <div className="radius-shell border border-slate-200 bg-white p-6 shadow-soft">
+                  <div className="radius-shell border border-neutral-200 bg-white p-6 shadow-soft">
                     <div className="flex items-center justify-between gap-3">
                       <div>
-                        <div className="text-sm font-semibold text-slate-900">
+                        <div className="text-sm font-semibold text-text-strong">
                           Activity summary
                         </div>
-                        <p className="mt-2 text-sm leading-6 text-slate-500">
+                        <p className="mt-2 text-sm leading-6 text-text-body">
                           Mentions and assignments should pull attention first. Reports can wait
                           until active work is clear.
                         </p>
@@ -545,17 +545,17 @@ export function NotificationsPage() {
                       ].map(([label, value]) => (
                         <div
                           key={label}
-                          className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3"
+                          className="flex items-center justify-between rounded-2xl border border-neutral-200 surface-subtle px-4 py-3"
                         >
-                          <span className="text-sm font-medium text-slate-700">{label}</span>
+                          <span className="text-sm font-medium text-text-body">{label}</span>
                           <Badge variant="brand">{value}</Badge>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  <div className="radius-shell border border-slate-200 bg-white p-6 shadow-soft">
-                    <div className="text-sm font-semibold text-slate-900">
+                  <div className="radius-shell border border-neutral-200 bg-white p-6 shadow-soft">
+                    <div className="text-sm font-semibold text-text-strong">
                       Quick actions
                     </div>
                     <div className="mt-4 space-y-3">

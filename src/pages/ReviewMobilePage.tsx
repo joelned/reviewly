@@ -162,7 +162,17 @@ function FeedbackPane({
         />
         <div className="mt-2 flex items-center justify-between text-xs text-text-muted">
           <span>Minimum 50 characters</span>
-          <span>{generalFeedback.trim().length} characters</span>
+          <span
+            className={cn(
+              generalFeedback.trim().length >= 50
+                ? 'text-success-600'
+                : generalFeedback.trim().length > 0
+                  ? 'text-warning-600'
+                  : 'text-text-muted',
+            )}
+          >
+            {generalFeedback.trim().length} characters
+          </span>
         </div>
       </div>
 
@@ -181,7 +191,7 @@ function FeedbackPane({
           </h3>
           <ChevronDown
             className={cn(
-              'h-4 w-4 text-neutral-400 transition-transform',
+              'h-4 w-4 text-neutral-400 transition-transform duration-200',
               inlineCommentsOpen && 'rotate-180',
             )}
           />
@@ -328,9 +338,9 @@ export function ReviewMobilePage() {
                   </div>
                   <div className="mt-0.5 flex items-center gap-2">
                     <Badge variant="info">TypeScript</Badge>
-                    <span className="text-xs italic text-neutral-400">
-                      {saveState === 'saved' ? 'Draft saved just now' : 'Draft not yet saved'}
-                    </span>
+                    <Badge variant={saveState === 'saved' ? 'success' : 'neutral'}>
+                      {saveState === 'saved' ? 'Saved' : 'Unsaved'}
+                    </Badge>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 self-start sm:self-auto">
@@ -475,7 +485,9 @@ export function ReviewMobilePage() {
                       Auth Middleware Review
                     </h1>
                     <Badge variant="info">TypeScript</Badge>
-                    <Badge variant="brand">Draft</Badge>
+                      <Badge variant={saveState === 'saved' ? 'success' : 'neutral'}>
+                        {saveState === 'saved' ? 'Saved' : 'Unsaved'}
+                      </Badge>
                   </div>
                   <p className="mt-2 max-w-[54ch] text-sm leading-6 text-text-muted">
                     A desktop review workspace designed for reading code and writing

@@ -199,7 +199,7 @@ export function SubmissionDetailPage() {
                       key={`${index + 1}-${line}`}
                       className={cn(
                         'grid grid-cols-[2.5rem_minmax(0,1fr)_2.75rem] items-center gap-2',
-                        index === 3 ? 'bg-secondary-500/10' : 'hover:bg-white/10',
+                        index === 3 ? 'bg-brand/10' : 'hover:bg-white/10',
                       )}
                     >
                       <span
@@ -248,60 +248,62 @@ export function SubmissionDetailPage() {
                   <h2 className="text-xs font-bold uppercase tracking-[0.18em] text-text-muted">
                     Comments ({visibleMobileComments.length})
                   </h2>
-                  <div aria-label="Comment filters" className="flex gap-2 text-xs" role="tablist">
-                    <button
+                  <div aria-label="Comment filters" className="flex gap-3 text-xs font-semibold" role="tablist">
+                    <Button
                       aria-selected={mobileCommentFilter === 'unresolved'}
                       className={cn(
-                        'font-medium',
+                        'min-h-0 rounded-none px-0 py-0',
                         mobileCommentFilter === 'unresolved'
-                          ? 'text-brand'
+                          ? 'border-b-2 border-brand pb-1 text-brand hover:bg-transparent'
                           : 'text-text-muted',
                       )}
                       onClick={() => setMobileCommentFilter('unresolved')}
                       role="tab"
                       type="button"
+                      variant="ghost"
                     >
                       Unresolved
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       aria-selected={mobileCommentFilter === 'all'}
                       className={cn(
-                        'font-medium',
-                        mobileCommentFilter === 'all' ? 'text-brand' : 'text-text-muted',
+                        'min-h-0 rounded-none px-0 py-0',
+                        mobileCommentFilter === 'all'
+                          ? 'border-b-2 border-brand pb-1 text-brand hover:bg-transparent'
+                          : 'text-text-muted',
                       )}
                       onClick={() => setMobileCommentFilter('all')}
                       role="tab"
                       type="button"
+                      variant="ghost"
                     >
                       All
-                    </button>
+                    </Button>
                   </div>
                 </div>
 
                 {visibleMobileComments.map((comment) =>
                   comment.status === 'unresolved' ? (
                     <Card key={comment.author} className="overflow-hidden" elevated padding="none">
-                      <div className="flex items-start gap-3 border-b border-gray-100 p-4">
+                      <div className="flex items-start gap-3 border-b border-neutral-100 p-4">
                         <Avatar className="h-8 w-8" initials="JD" />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-semibold">{comment.author}</span>
-                            <span className="text-xs text-gray-500">{comment.time}</span>
+                            <span className="text-sm font-semibold text-text-strong">{comment.author}</span>
+                            <span className="text-xs text-text-muted">{comment.time}</span>
                           </div>
-                          <p className="mt-1 text-sm text-gray-600">{comment.body}</p>
+                          <p className="mt-1 text-sm leading-6 text-text-body">{comment.body}</p>
                         </div>
                       </div>
-                      <div className="bg-gray-50/60 p-4 pl-12">
+                      <div className="surface-subtle p-4 pl-12">
                         <div className="flex items-start gap-3">
                           <Avatar className="h-6 w-6 text-xs" initials="JS" tone="emerald" />
                           <div className="flex-1">
-                            <span className="text-xs font-semibold">
+                            <span className="text-xs font-semibold text-text-strong">
                               John Smith
-                              <span className="ml-1 rounded bg-blue-100 px-1.5 py-0.5 text-xs text-blue-700">
-                                Author
-                              </span>
+                              <Badge className="ml-1" variant="brand">Author</Badge>
                             </span>
-                            <p className="mt-1 text-xs text-gray-600">
+                            <p className="mt-1 text-xs leading-6 text-text-body">
                               It&apos;s handled inside the helper function. I&apos;ll add a
                               clarifying comment.
                             </p>
@@ -312,19 +314,19 @@ export function SubmissionDetailPage() {
                   ) : (
                     <Card
                       key={comment.author}
-                      className="overflow-hidden border-dashed bg-white/70"
+                      className="overflow-hidden border-dashed border-neutral-300 bg-white/70"
                       padding="none"
                     >
                       <div className="flex items-center justify-between p-3">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 text-green-600">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-success-50 text-success-600">
                             <Check className="h-4 w-4" />
                           </div>
                           <div>
-                            <span className="text-xs font-medium italic text-gray-600">
+                            <span className="text-xs font-medium italic text-text-body">
                               Resolved by @{comment.author}
                             </span>
-                            <p className="mt-1 text-xs text-gray-500">{comment.body}</p>
+                            <p className="mt-1 text-xs text-text-muted">{comment.body}</p>
                           </div>
                         </div>
                         <Badge variant="success">Resolved</Badge>
@@ -335,7 +337,7 @@ export function SubmissionDetailPage() {
               </section>
             </main>
 
-            <nav className="safe-bottom-lg fixed inset-x-0 bottom-0 z-20 mx-auto flex w-full max-w-md items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:max-w-lg sm:px-6 lg:max-w-xl">
+            <nav className="safe-bottom-lg fixed inset-x-0 bottom-0 z-20 mx-auto flex w-full max-w-md items-center justify-between border-t border-neutral-200 bg-white px-4 py-3 sm:max-w-lg sm:px-6 lg:max-w-xl">
               {mobileDetailNavItems.map((item) => {
                 const Icon = item.icon
                 const active = item.label === 'Files'
@@ -345,7 +347,7 @@ export function SubmissionDetailPage() {
                     aria-current={active ? 'page' : undefined}
                     className={cn(
                       'flex flex-col items-center gap-1',
-                      active ? 'text-blue-600' : 'text-gray-400',
+                      active ? 'text-brand' : 'text-text-muted',
                     )}
                     onClick={() => navigate(item.path)}
                     type="button"
@@ -561,7 +563,7 @@ export function SubmissionDetailPage() {
                         >
                           <div className="select-none text-right opacity-30">{index + 1}</div>
                           <div className="flex min-w-0 items-center justify-between gap-3">
-                            <span className={cn(index === 5 && 'text-zinc-100')}>{line}</span>
+                            <span className={cn(index === 5 && 'text-white')}>{line}</span>
                             {index === 5 ? (
                               <span className="rounded-full bg-secondary-600 px-1.5 text-xs font-bold text-white">
                                 2
@@ -592,46 +594,46 @@ export function SubmissionDetailPage() {
                                 <Plus className="h-3.5 w-3.5" />
                               </Button>
                             </Tooltip>
-                            <span className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-500">
+                            <span className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">
                               More in menu
                             </span>
                           </div>
                         </div>
                       </ContextMenu>
                       {index === 5 && (
-                        <div className="surface-dark-soft mx-6 my-2 ml-12 overflow-hidden rounded-md border-y border-zinc-800">
+                        <div className="surface-dark-soft mx-6 my-2 ml-12 overflow-hidden rounded-xl border-y border-neutral-800">
                           <div className="space-y-4 p-4">
                             <div className="flex gap-3">
                               <Avatar className="h-8 w-8" initials="SC" />
                               <div className="flex-1">
                                 <div className="mb-1 flex items-center gap-2">
-                                  <span className="text-xs font-semibold text-zinc-100">
+                                  <span className="text-xs font-semibold text-white">
                                     sarah_codes
                                   </span>
-                                  <span className="text-xs text-zinc-500">
+                                  <span className="text-xs text-neutral-500">
                                     2 hours ago
                                   </span>
                                 </div>
-                                <p className="text-xs leading-relaxed text-zinc-300">
+                                <p className="text-xs leading-relaxed text-neutral-300">
                                   Consider adding a generic for the return type as
                                   well. It might make the hook more flexible for async
                                   operations.
                                 </p>
                               </div>
                             </div>
-                            <div className="flex gap-3 border-l border-zinc-800 pl-11">
+                            <div className="flex gap-3 border-l border-neutral-800 pl-11">
                               <Avatar className="h-8 w-8" initials="DM" tone="emerald" />
                               <div className="flex-1">
                                 <div className="mb-1 flex items-center gap-2">
-                                  <span className="text-xs font-semibold text-zinc-100">
+                                  <span className="text-xs font-semibold text-white">
                                     dev_mark
                                   </span>
-                                  <span className="text-xs text-zinc-500">
+                                  <span className="text-xs text-neutral-500">
                                     1 hour ago
                                   </span>
                                 </div>
-                                <p className="text-xs leading-relaxed text-zinc-300">
-                                  Agreed. The <code className="rounded bg-zinc-800 px-1 text-zinc-100">any</code>{' '}
+                                <p className="text-xs leading-relaxed text-neutral-300">
+                                  Agreed. The <code className="rounded bg-neutral-800 px-1 text-white">any</code>{' '}
                                   constraint is a bit dangerous here.
                                 </p>
                               </div>
@@ -640,7 +642,7 @@ export function SubmissionDetailPage() {
                           <div className="px-4 pb-4">
                             <Textarea
                               aria-label="Write a reply to this thread"
-                              className="surface-dark h-20 rounded-md border-neutral-800 p-3 text-sm text-white placeholder:text-neutral-500 focus:border-brand"
+                              className="surface-dark h-20 rounded-xl border-neutral-800 p-3 text-sm text-white placeholder:text-neutral-500 focus:border-brand"
                               placeholder="Write a reply..."
                             />
                           </div>
@@ -648,16 +650,17 @@ export function SubmissionDetailPage() {
                       )}
                     </div>
                   ))}
-                  <button
+                  <Button
                     aria-label="Show one resolved comment"
-                    className="ml-16 my-2 flex cursor-pointer items-center gap-2 text-zinc-500 transition hover:text-zinc-300"
+                    className="ml-16 my-2 flex items-center gap-2 px-0 text-neutral-500 hover:bg-transparent hover:text-neutral-300"
                     type="button"
+                    variant="ghost"
                   >
                     <ChevronRight className="h-3 w-3" />
                     <span className="text-xs font-medium uppercase tracking-[0.18em]">
                       1 Resolved Comment
                     </span>
-                  </button>
+                  </Button>
                   {desktopTailLines.map((line, index) => (
                     <div key={`${line}-${index}`} className="flex">
                       <div className="w-12 select-none pr-4 text-right opacity-30">
@@ -671,19 +674,19 @@ export function SubmissionDetailPage() {
 
               <aside className="surface-page radius-shell self-start border border-neutral-200 px-4 py-6 shadow-soft sm:px-6 sm:py-8 xl:sticky xl:top-8">
                 <section className="mb-10">
-                  <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-gray-400">
+                  <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-text-muted">
                     Next actions
                   </h3>
                   <div className="space-y-3">
                     {unresolvedWorkItems.map((item, index) => (
                       <div
                         key={item}
-                        className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm"
+                        className="rounded-2xl border border-neutral-200 bg-white px-4 py-3"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div>
-                            <p className="text-sm font-semibold text-slate-900">{item}</p>
-                            <p className="mt-1 text-xs text-slate-500">
+                            <p className="text-sm font-semibold text-text-strong">{item}</p>
+                            <p className="mt-1 text-xs text-text-muted">
                               {index === 0 ? 'Start here to unblock the review conversation.' : 'Resolve after the active reply is posted.'}
                             </p>
                           </div>
@@ -697,7 +700,7 @@ export function SubmissionDetailPage() {
                 </section>
 
                 <section className="mb-10">
-                  <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-gray-400">
+                  <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-text-muted">
                     Reviewers
                   </h3>
                   <div className="space-y-3">
@@ -706,18 +709,18 @@ export function SubmissionDetailPage() {
                         initials: 'SH',
                         role: 'Principal Engineer',
                         status: 'Approved',
-                        tone: 'text-emerald-600 bg-emerald-50 border-emerald-100',
                       },
                       {
                         initials: 'MT',
                         role: 'Senior Frontend',
                         status: 'Changes Requested',
-                        tone: 'text-amber-600 bg-amber-50 border-amber-100',
                       },
                     ].map((reviewer) => (
-                      <div
+                      <Card
                         key={reviewer.initials}
-                        className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-3 shadow-sm"
+                        className="flex items-center justify-between"
+                        elevated
+                        padding="sm"
                       >
                         <div className="flex items-center gap-3">
                           <Avatar className="h-8 w-8" initials={reviewer.initials} />
@@ -727,32 +730,27 @@ export function SubmissionDetailPage() {
                                 ? 'Sarah Henderson'
                                 : 'Mark Thompson'}
                             </p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-text-muted">
                               {reviewer.role}
                             </p>
                           </div>
                         </div>
-                        <span
-                          className={`rounded-full border px-2 py-0.5 text-xs font-medium ${reviewer.tone}`}
-                        >
+                        <Badge variant={reviewer.status === 'Approved' ? 'success' : 'warning'}>
                           {reviewer.status}
-                        </span>
-                      </div>
+                        </Badge>
+                      </Card>
                     ))}
                   </div>
                 </section>
 
                 <section className="mb-10">
-                  <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-gray-400">
+                  <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-text-muted">
                     Dimensions Requested
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {['Readability', 'Performance', 'Security', 'Testability'].map(
                       (item) => (
-                        <span
-                          key={item}
-                          className="rounded-md border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700"
-                        >
+                        <span key={item} className="rounded-xl border border-neutral-200 bg-white px-2.5 py-1 text-xs font-medium text-text-body">
                           {item}
                         </span>
                       ),
@@ -761,7 +759,7 @@ export function SubmissionDetailPage() {
                 </section>
 
                 <section className="mb-10">
-                  <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-gray-400">
+                  <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-text-muted">
                     Submission Info
                   </h3>
                   <div className="grid grid-cols-2 gap-y-4">
@@ -772,11 +770,9 @@ export function SubmissionDetailPage() {
                       ['Priority', 'High'],
                     ].map(([label, value]) => (
                       <div key={label}>
-                        <p className="mb-0.5 text-xs text-gray-400">{label}</p>
+                        <p className="mb-0.5 text-xs text-text-muted">{label}</p>
                         {label === 'Priority' ? (
-                          <span className="rounded border border-red-100 bg-red-50 px-2 py-0.5 text-xs font-bold uppercase text-red-500">
-                            {value}
-                          </span>
+                          <Badge variant="danger">{value}</Badge>
                         ) : (
                           <p className="text-xs font-medium">{value}</p>
                         )}
@@ -787,10 +783,10 @@ export function SubmissionDetailPage() {
 
                 {isSubmitter ? (
                   <section className="mb-10">
-                    <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-gray-400">
+                    <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-text-muted">
                       Reporting
                     </h3>
-                    <div className="space-y-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm text-slate-600 shadow-sm">
+                    <div className="space-y-3 rounded-2xl border border-neutral-200 bg-white px-4 py-4 text-sm text-text-body">
                       <p>Export becomes useful after the unresolved discussion is cleaned up.</p>
                       <Button
                         block
@@ -805,10 +801,10 @@ export function SubmissionDetailPage() {
                 ) : null}
 
                 <section>
-                  <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-gray-400">
+                  <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-text-muted">
                     Activity Timeline
                   </h3>
-                  <div className="relative space-y-6 before:absolute before:bottom-2 before:left-2 before:top-2 before:w-px before:bg-gray-200 before:content-['']">
+                  <div className="relative space-y-6 before:absolute before:bottom-2 before:left-2 before:top-2 before:w-px before:bg-neutral-200 before:content-['']">
                     {[
                       'Submission Created',
                       'Sarah Henderson added a comment',
@@ -818,10 +814,10 @@ export function SubmissionDetailPage() {
                     ].map((entry, index) => (
                       <div key={entry} className="relative pl-7">
                         <div
-                          className={`absolute left-0 top-1.5 z-10 h-4 w-4 rounded-full border-2 border-white ${index === 0 ? 'bg-zinc-900' : 'bg-gray-200'}`}
+                          className={`absolute left-0 top-1.5 z-10 h-4 w-4 rounded-full border-2 border-white ${index === 0 ? 'bg-text-strong' : 'bg-neutral-200'}`}
                         />
-                        <p className="text-xs font-semibold text-gray-700">{entry}</p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs font-semibold text-text-body">{entry}</p>
+                        <p className="text-xs text-text-muted">
                           {index === 0 ? 'Alex Rivera • 5h ago' : 'Timeline event'}
                         </p>
                       </div>

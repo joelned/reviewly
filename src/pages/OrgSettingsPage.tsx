@@ -21,7 +21,6 @@ import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { Field, Input, Select } from '../components/ui/Field'
 import { Modal } from '../components/ui/Modal'
-import { SegmentedControl } from '../components/ui/SegmentedControl'
 import { Toast } from '../components/ui/Toast'
 
 const tabs = ['general', 'members', 'billing', 'api', 'danger'] as const
@@ -112,7 +111,7 @@ export function OrgSettingsPage() {
           <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white">
             <WorkspaceShell wide className="flex items-center justify-between px-4 py-3 lg:px-6">
               <div className="flex items-center gap-2">
-                <div className="rounded bg-brand p-1 text-white shadow-md shadow-brand/20">
+                <div className="rounded-xl bg-brand p-2 text-white shadow-md shadow-brand/20">
                   <Layers3 className="h-5 w-5" />
                 </div>
                 <span className="text-lg font-bold tracking-tight">
@@ -133,17 +132,21 @@ export function OrgSettingsPage() {
                 <AccountMenu initials={initials} />
               </div>
             </WorkspaceShell>
-            <nav className="hide-scrollbar flex gap-4 overflow-x-auto px-4 text-sm font-medium text-text-muted sm:gap-6 lg:hidden">
-              <SegmentedControl
-                ariaLabel="Organization settings sections"
-                className="mb-3 w-full min-w-max bg-transparent p-0"
-                onChange={setActiveTab}
-                options={tabs.map((tab) => ({
-                  label: tab === 'api' ? 'API Keys' : tab.replace('-', ' '),
-                  value: tab,
-                }))}
-                value={activeTab}
-              />
+            <nav className="hide-scrollbar flex gap-1 overflow-x-auto border-b border-neutral-200 px-4 lg:hidden">
+              {tabs.map((tab) => (
+                <button
+                  key={tab}
+                  className={`whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition ${
+                    activeTab === tab
+                      ? 'border-brand text-brand'
+                      : 'border-transparent text-text-muted hover:text-text-strong'
+                  }`}
+                  onClick={() => setActiveTab(tab)}
+                  type="button"
+                >
+                  {tabLabels[tab]}
+                </button>
+              ))}
             </nav>
           </header>
 
@@ -191,11 +194,7 @@ export function OrgSettingsPage() {
                 </div>
                 <Card className="space-y-6" elevated>
                   <Field label="Organization Name">
-                    <Input
-                      className="rounded-md focus:border-black"
-                      defaultValue="Acme Development"
-                      type="text"
-                    />
+                    <Input defaultValue="Acme Development" type="text" />
                   </Field>
                   <Field
                     hint="Slugs are used for team URLs and cannot be changed."
@@ -206,7 +205,7 @@ export function OrgSettingsPage() {
                         reviewly.app/org/
                       </span>
                       <Input
-                        className="flex-1 rounded-l-none rounded-r-md border-neutral-200 bg-neutral-50 text-text-muted"
+                        className="min-h-[48px] flex-1 rounded-l-none rounded-r-xl border-neutral-200 bg-neutral-50 text-text-muted"
                         readOnly
                         type="text"
                         value="acme-dev"
@@ -218,7 +217,7 @@ export function OrgSettingsPage() {
                       Organization Avatar
                     </span>
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-                      <Avatar className="h-16 w-16 rounded-lg text-lg" initials="AD" />
+                      <Avatar className="h-16 w-16 rounded-xl text-lg" initials="AD" />
                       <input
                         accept="image/*"
                         className="sr-only"
@@ -234,13 +233,14 @@ export function OrgSettingsPage() {
                       <Button
                         className="w-fit"
                         onClick={() => avatarInputRef.current?.click()}
+                        size="sm"
                         type="button"
                         variant="outline"
                       >
                         Upload new
                       </Button>
                       <Button
-                        className="w-fit text-red-500 hover:bg-red-50 hover:text-red-600"
+                        className="w-fit text-danger hover:bg-danger-50 hover:text-danger-600"
                         onClick={() => {
                           setAvatarFileName('')
                           if (avatarInputRef.current) {
@@ -277,7 +277,7 @@ export function OrgSettingsPage() {
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="space-y-1">
                     <h2 className="text-xl font-semibold">Team Members</h2>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-text-muted">
                       Manage access for your organization.
                     </p>
                   </div>
@@ -319,7 +319,7 @@ export function OrgSettingsPage() {
                   <Search className="absolute left-3 top-3 h-4 w-4 text-text-muted" />
                   <Input
                     aria-label="Search team members"
-                    className="rounded-md py-2.5 pl-10 focus:border-brand"
+                    className="py-2.5 pl-10"
                     placeholder="Search members..."
                     type="text"
                   />
@@ -364,14 +364,16 @@ export function OrgSettingsPage() {
                             </Select>
                           </td>
                           <td className="w-[1%] whitespace-nowrap px-4 py-4 text-right text-neutral-400">
-                            <button
+                            <Button
                               aria-label="Open actions for Sarah Chen"
-                              className="ml-auto inline-flex rounded-full p-2 transition hover:bg-neutral-100"
+                              className="ml-auto"
                               onClick={() => handleManageMember('Sarah Chen')}
+                              size="icon"
                               type="button"
+                              variant="ghost"
                             >
                               <MoreVertical className="h-4 w-4" />
-                            </button>
+                            </Button>
                           </td>
                         </tr>
                       </tbody>
@@ -433,7 +435,7 @@ export function OrgSettingsPage() {
                   </Card>
                   <Card className="flex flex-col items-center space-y-3" elevated>
                     <div className="w-full text-sm font-semibold text-text-strong">Usage this cycle</div>
-                    <div className="mb-2 flex h-40 w-40 items-center justify-center rounded-full border-[12px] border-brand-100 border-t-brand-500">
+                    <div className="mb-2 flex h-40 w-40 items-center justify-center rounded-full border-[12px] border-warning-100 border-t-warning-600">
                       <div className="text-center">
                         <div className="text-2xl font-bold">34/50</div>
                         <div className="text-xs font-bold uppercase tracking-[0.18em] text-neutral-400">
@@ -493,7 +495,7 @@ export function OrgSettingsPage() {
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="space-y-1">
                     <h2 className="text-xl font-semibold">API Keys</h2>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-text-muted">
                       Programmatic access to your organization.
                     </p>
                   </div>
@@ -507,32 +509,32 @@ export function OrgSettingsPage() {
                 </div>
                 <div className="grid gap-4 xl:grid-cols-2">
                   <Card className="space-y-3" elevated>
-                    <div className="text-sm font-semibold text-slate-900">Access model</div>
-                    <p className="text-sm leading-6 text-slate-500">
+                    <div className="text-sm font-semibold text-text-strong">Access model</div>
+                    <p className="text-sm leading-6 text-text-body">
                       Keep production and local-development keys separate so rotation and incident
                       response stay predictable.
                     </p>
                   </Card>
                   <Card className="space-y-3" elevated>
-                    <div className="text-sm font-semibold text-slate-900">Key hygiene</div>
-                    <p className="text-sm leading-6 text-slate-500">
+                    <div className="text-sm font-semibold text-text-strong">Key hygiene</div>
+                    <p className="text-sm leading-6 text-text-body">
                       Review last-used activity before revoking keys, and rotate any credential
                       that is shared beyond one environment.
                     </p>
                   </Card>
                 </div>
                 <Card className="overflow-hidden space-y-0" elevated padding="none">
-                  <div className="border-b border-slate-200 px-6 py-5">
-                    <div className="text-sm font-semibold text-slate-900">Active keys</div>
+                  <div className="border-b border-neutral-200 px-6 py-5">
+                    <div className="text-sm font-semibold text-text-strong">Active keys</div>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full min-w-[32rem] text-left text-sm sm:min-w-[34rem]">
-                      <thead className="border-b bg-gray-50">
+                      <thead className="border-b bg-neutral-50">
                         <tr>
-                          <th className="px-4 py-3 font-medium text-gray-500">
+                          <th className="px-4 py-3 font-medium text-text-muted">
                             Name
                           </th>
-                          <th className="px-4 py-3 font-medium text-gray-500">
+                          <th className="px-4 py-3 font-medium text-text-muted">
                             Last Used
                           </th>
                           <th className="px-4 py-3" />
@@ -546,20 +548,22 @@ export function OrgSettingsPage() {
                           <tr key={name}>
                             <td className="px-4 py-4">
                               <div className="font-medium">{name}</div>
-                              <div className="break-all font-mono text-xs text-gray-400 sm:break-normal">
+                              <div className="break-all font-mono text-xs text-text-muted sm:break-normal">
                                 {key}
                               </div>
                             </td>
-                            <td className="px-4 py-4 whitespace-nowrap text-gray-500">{lastUsed}</td>
+                            <td className="px-4 py-4 whitespace-nowrap text-text-muted">{lastUsed}</td>
                             <td className="w-[1%] whitespace-nowrap px-4 py-4 text-right">
-                              <button
+                              <Button
                                 aria-label={`Revoke ${name}`}
-                                className="text-xs font-semibold text-red-500"
+                                className="text-danger"
                                 onClick={() => handleRevokeKey(name)}
+                                size="sm"
                                 type="button"
+                                variant="ghost"
                               >
                                 Revoke
-                              </button>
+                              </Button>
                             </td>
                           </tr>
                         ))}
@@ -574,25 +578,25 @@ export function OrgSettingsPage() {
               <section className="space-y-8 py-4">
                 <div className="space-y-1">
                   <h2 className="text-xl font-semibold">Danger Zone</h2>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-text-muted">
                     Irreversible actions for your organization.
                   </p>
                 </div>
-                <Card className="border-red-100 bg-red-50/30 lg:max-w-2xl" elevated>
+                <Card className="border-danger-100 bg-danger-50/30 lg:max-w-2xl" elevated>
                   <div className="space-y-3">
-                    <div className="text-sm font-semibold text-red-900">Before you delete</div>
-                    <ul className="space-y-2 text-sm leading-6 text-slate-500">
+                    <div className="text-sm font-semibold text-danger-900">Before you delete</div>
+                    <ul className="space-y-2 text-sm leading-6 text-text-body">
                       <li>Transfer ownership of any active billing responsibilities.</li>
                       <li>Export the records your team needs to retain.</li>
                       <li>Confirm the org slug with another owner before proceeding.</li>
                     </ul>
                   </div>
                 </Card>
-                <Card className="border-red-200 bg-red-50/50 p-6 lg:max-w-2xl">
-                  <h3 className="mb-1 font-bold text-red-900">
+                <Card className="border-danger-200 bg-danger-50/50 p-6 lg:max-w-2xl">
+                  <h3 className="mb-1 font-bold text-danger-900">
                     Delete Organization
                   </h3>
-                  <p className="mb-6 text-sm text-red-700">
+                  <p className="mb-6 text-sm text-danger-700">
                     Once deleted, all data associated with Acme Development will
                     be permanently removed. This action cannot be undone.
                   </p>
@@ -615,26 +619,26 @@ export function OrgSettingsPage() {
             <Modal onClose={() => setKeyModalOpen(false)} title="API Key Generated">
                 <div className="space-y-4">
                   <div className="text-center">
-                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600">
+                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-success-100 text-success-600">
                       <KeyRound className="h-6 w-6" />
                     </div>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="mt-1 text-sm text-text-muted">
                       Copy this key now. You won&apos;t be able to see it again.
                     </p>
                   </div>
-                  <div className="rounded border border-yellow-200 bg-yellow-50 p-3 text-xs text-yellow-800">
+                  <div className="rounded border border-warning-200 bg-warning-50 p-3 text-xs text-warning-800">
                     For security reasons, we only show this once.
                   </div>
                   <div className="relative">
                     <Input
-                      className="rounded-xl border-slate-300 bg-slate-50 pr-12 font-mono text-sm"
+                      className="rounded-xl border-neutral-300 bg-neutral-50 pr-12 font-mono text-sm"
                       readOnly
                       type="text"
                       value="rev_live_a1b2c3d4e5f6g7h8i9j0"
                     />
                     <Button
                       aria-label="Copy API key"
-                      className="absolute right-1 top-1/2 h-9 w-9 min-h-[36px] min-w-[36px] -translate-y-1/2 text-gray-400 hover:bg-transparent hover:text-black"
+                      className="absolute right-1 top-1/2 h-9 w-9 min-h-[36px] min-w-[36px] -translate-y-1/2 text-text-muted hover:bg-transparent hover:text-text-strong"
                       iconOnlyLabel="Copy API key"
                       loading={copyingKey}
                       onClick={handleCopyKey}
@@ -661,24 +665,26 @@ export function OrgSettingsPage() {
             <Modal onClose={() => {
               setDeleteModalOpen(false)
               setDeleteSlug('')
-            }} title={<span className="text-red-600">Are you absolutely sure?</span>}>
+            }} title={<span className="text-danger-600">Are you absolutely sure?</span>}>
                 <div className="space-y-4">
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-text-body">
                     This action will delete the <strong>Acme Development</strong>{' '}
                     organization and all related data.
                   </p>
                   <Field
+                    error={deleteSlug !== '' && deleteSlug !== 'acme-dev' ? 'Slug does not match' : undefined}
                     hint="This confirmation protects against accidental deletion."
                     id="delete-confirmation"
                     label={
-                      <span className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
-                        Type <span className="font-bold text-black">acme-dev</span>{' '}
+                      <span className="text-xs font-semibold uppercase tracking-[0.18em] text-text-muted">
+                        Type <span className="font-bold text-text-strong">acme-dev</span>{' '}
                         to confirm
                       </span>
                     }
                   >
                     <Input
-                      className="rounded-xl border-slate-300 focus:border-red-500"
+                      aria-invalid={deleteSlug !== '' && deleteSlug !== 'acme-dev'}
+                      className="rounded-xl border-neutral-300 focus:border-danger-500"
                       onChange={(event) => setDeleteSlug(event.target.value)}
                       placeholder="acme-dev"
                       type="text"
@@ -711,7 +717,7 @@ export function OrgSettingsPage() {
                 </div>
             </Modal>
           )}
-          <Toast icon={<CheckCircle2 className="h-4 w-4 text-green-400" />} message={toast ?? ''} visible={Boolean(toast)} />
+          <Toast icon={<CheckCircle2 className="h-4 w-4 text-success-400" />} message={toast ?? ''} visible={Boolean(toast)} />
         </DesktopViewport>
       </ScreenCanvas>
     </div>
