@@ -1,47 +1,31 @@
-import type { HTMLAttributes, PropsWithChildren } from 'react'
-import { cn } from '../../lib/cn'
+import * as React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
 
-type BadgeVariant =
-  | 'info'
-  | 'success'
-  | 'warning'
-  | 'danger'
-  | 'neutral'
-  | 'brand'
-
-const variantClasses: Record<BadgeVariant, string> = {
-  brand: 'border-brand-100 bg-brand-50 text-brand-700',
-  danger: 'border-danger-100 bg-danger-50 text-danger-700',
-  info: 'border-info-100 bg-info-50 text-info-700',
-  neutral: 'border-neutral-200 bg-neutral-100 text-neutral-700',
-  success: 'border-success-100 bg-success-50 text-success-700',
-  warning: 'border-warning-100 bg-warning-50 text-warning-700',
-}
-
-export function Badge({
-  children,
-  className,
-  ...props
-}: PropsWithChildren<
-  HTMLAttributes<HTMLSpanElement> & {
-    variant?: BadgeVariant
+const badgeVariants = cva(
+  'inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium capitalize transition-colors',
+  {
+    variants: {
+      variant: {
+        default: 'border-border bg-mutedSurface text-zinc-200',
+        secondary: 'border-primary/20 bg-primary/10 text-primary',
+        success: 'border-success/20 bg-success/10 text-success',
+        warning: 'border-warning/20 bg-warning/10 text-warning',
+        destructive: 'border-destructive/20 bg-destructive/10 text-destructive',
+        reviewer: 'border-violet-500/20 bg-violet-500/10 text-violet-300',
+        admin: 'border-warning/20 bg-warning/10 text-warning',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+    },
   }
->) {
-  const variant = (props as { variant?: BadgeVariant }).variant ?? 'neutral'
-  const { variant: _variant, ...rest } = props as HTMLAttributes<HTMLSpanElement> & {
-    variant?: BadgeVariant
-  }
+)
 
-  return (
-    <span
-      className={cn(
-        'inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium leading-4',
-        variantClasses[variant],
-        className,
-      )}
-      {...rest}
-    >
-      {children}
-    </span>
-  )
+export interface BadgeProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof badgeVariants> {}
+
+export function Badge({ className, variant, ...props }: BadgeProps) {
+  return <div className={cn(badgeVariants({ variant }), className)} {...props} />
 }
