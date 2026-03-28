@@ -140,7 +140,8 @@ export const handlers = [
     const url = new URL(request.url)
     const page = Number(url.searchParams.get('page') ?? '1')
     const size = Number(url.searchParams.get('size') ?? '20')
-    return HttpResponse.json(listReviews(user, page, size))
+    const status = url.searchParams.get('status') ?? undefined
+    return HttpResponse.json(listReviews(user, page, size, status as 'assigned' | 'in_progress' | 'submitted' | undefined))
   }),
 
   http.get(`${import.meta.env.VITE_API_URL}/reviews/:submissionId`, async ({ params, request }) => {

@@ -6,6 +6,7 @@ import {
   type RegisterCredentials,
   type Review,
   type ReviewComment,
+  type ReviewStatus,
   type SubmitReviewPayload,
   type Submission,
   type User,
@@ -634,13 +635,23 @@ export function closeSubmission(currentUser: User, submissionId: number) {
   )
 }
 
-export function listReviews(currentUser: User, page = 1, size = 10) {
+export function listReviews(currentUser: User, page = 1, size = 10, status?: ReviewStatus) {
   const items =
     currentUser.role === 'reviewer'
       ? reviews.filter((review) => review.reviewer.id === currentUser.id)
       : reviews
 
-  return paginate(items.sort((left, right) => right.created_at.localeCompare(left.created_at)), page, size)
+  return paginate(
+    items
+      .filter((review) => (status ? review.status === status : true))
+      .sort((left, right) => right.created_at.localeCompare(left.created_at))
+      .map((review) => ({
+        ...review,
+        submission: getSubmission(review.submission_id) ?? undefined,
+      })),
+    page,
+    size
+  )
 }
 
 export function getReviewBySubmissionId(submissionId: number) {

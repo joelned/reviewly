@@ -1,5 +1,5 @@
 import { FileSearch } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Button } from '@/components/ui/button'
@@ -7,22 +7,18 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { SubmissionCard } from '@/features/submissions/components/SubmissionCard'
 import { useReviewQueue } from '@/features/reviews/hooks/useReviewQueue'
-import { useSubmissions } from '@/features/submissions/hooks/useSubmissions'
 import { type ReviewStatus } from '@/types'
 
 export function ReviewQueuePage() {
   const [tab, setTab] = useState<ReviewStatus>('assigned')
-  const reviewsQuery = useReviewQueue()
-  const submissionsQuery = useSubmissions({ page: 1, size: 20 })
+  const [page, setPage] = useState(1)
+  const reviewsQuery = useReviewQueue(page, 10, tab)
 
-  const submissionMap = useMemo(() => {
-    return new Map((submissionsQuery.data?.items ?? []).map((submission) => [submission.id, submission]))
-  }, [submissionsQuery.data?.items])
+  const items = reviewsQuery.data?.items ?? []
 
-  const items = (reviewsQuery.data?.items ?? [])
-    .filter((review) => review.status === tab)
-    .map((review) => submissionMap.get(review.submission_id))
-    .filter(Boolean)
+  useEffect(() => {
+    setPage(1)
+  }, [tab])
 
   return (
     <div className="space-y-8">
@@ -45,7 +41,7 @@ export function ReviewQueuePage() {
         </TabsList>
         {(['assigned', 'in_progress', 'submitted'] as ReviewStatus[]).map((status) => (
           <TabsContent key={status} value={status}>
-            {reviewsQuery.isLoading || submissionsQuery.isLoading ? (
+            {reviewsQuery.isLoading ? (
               <div className="space-y-4">
                 {Array.from({ length: 3 }).map((_, index) => (
                   <Skeleton key={index} className="h-32" />
@@ -59,14 +55,40 @@ export function ReviewQueuePage() {
                 actionLabel="Refresh queue"
                 onAction={() => {
                   reviewsQuery.refetch()
-                  submissionsQuery.refetch()
                 }}
               />
             ) : (
               <div className="space-y-4">
-                {items.map((submission) =>
-                  submission ? <SubmissionCard key={submission.id} submission={submission} /> : null
+                {items.map((review) =>
+                  review.submission ? (
+                    <SubmissionCard
+                      key={review.id}
+                      submission={review.submission}
+                      href={`/reviews/${review.submission.id}`}
+                    />
+                  ) : null
                 )}
+                <div className="flex flex-col gap-4 rounded-2xl border border-border bg-surface/70 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-sm text-zinc-500">
+                    Page {reviewsQuery.data?.page} of {reviewsQuery.data?.pages}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="secondary"
+                      disabled={(reviewsQuery.data?.page ?? 1) <= 1}
+                      onClick={() => setPage((current) => Math.max(current - 1, 1))}
+                    >
+                      Previous
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      disabled={(reviewsQuery.data?.page ?? 1) >= (reviewsQuery.data?.pages ?? 1)}
+                      onClick={() => setPage((current) => current + 1)}
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </div>
               </div>
             )}
           </TabsContent>

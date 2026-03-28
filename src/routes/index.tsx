@@ -91,50 +91,30 @@ export const appRouter = createBrowserRouter([
             element: withSuspense(SubmissionsListPage),
           },
           {
+            path: '/submissions/new',
+            element: <RoleGuard allowedRoles={['author']}>{withSuspense(NewSubmissionPage)}</RoleGuard>,
+          },
+          {
             path: '/submissions/:id',
             element: withSuspense(SubmissionDetailPage),
           },
           {
-            element: <RoleGuard allowedRoles={['author']} />,
-            children: [
-              {
-                path: '/submissions/new',
-                element: withSuspense(NewSubmissionPage),
-              },
-            ],
+            path: '/admin/users',
+            element: <RoleGuard allowedRoles={['admin']}>{withSuspense(UsersPage)}</RoleGuard>,
           },
           {
-            element: <RoleGuard allowedRoles={['admin']} />,
-            children: [
-              {
-                path: '/admin/users',
-                element: withSuspense(UsersPage),
-              },
-              {
-                path: '/admin/assignments',
-                element: withSuspense(AssignmentsPage),
-              },
-            ],
+            path: '/admin/assignments',
+            element: <RoleGuard allowedRoles={['admin']}>{withSuspense(AssignmentsPage)}</RoleGuard>,
           },
           {
-            element: <RoleGuard allowedRoles={['reviewer']} />,
-            children: [
-              {
-                path: '/reviews',
-                element: withSuspense(ReviewQueuePage),
-              },
-            ],
+            path: '/reviews',
+            element: <RoleGuard allowedRoles={['reviewer']}>{withSuspense(ReviewQueuePage)}</RoleGuard>,
           },
         ],
       },
       {
-        element: <RoleGuard allowedRoles={['reviewer']} />,
-        children: [
-          {
-            path: '/reviews/:id',
-            element: withSuspense(ReviewEditorPage, true),
-          },
-        ],
+        path: '/reviews/:id',
+        element: <RoleGuard allowedRoles={['reviewer']}>{withSuspense(ReviewEditorPage, true)}</RoleGuard>,
       },
     ],
   },

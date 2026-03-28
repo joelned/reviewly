@@ -71,6 +71,7 @@ export interface Review {
   id: number
   submission_id: number
   reviewer: User
+  submission?: Submission
   status: ReviewStatus
   summary?: string
   rating?: number

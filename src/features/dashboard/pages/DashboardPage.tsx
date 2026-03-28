@@ -1,6 +1,8 @@
+import { Suspense, lazy } from 'react'
 import { CheckCircle2, Clock3, Layers3, Sparkles, TimerReset } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { EmptyState } from '@/components/shared/EmptyState'
+import { PageLoadingFallback } from '@/components/shared/PageLoadingFallback'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { PageHeader } from '@/components/layout/PageHeader'
@@ -11,8 +13,13 @@ import { StatCard } from '@/features/dashboard/components/StatCard'
 import { RecentSubmissions } from '@/features/dashboard/components/RecentSubmissions'
 import { ActivityFeed } from '@/features/dashboard/components/ActivityFeed'
 import { SubmissionCard } from '@/features/submissions/components/SubmissionCard'
-import { AdminDashboardPage } from '@/features/admin/pages/AdminDashboardPage'
 import { getDashboardActivity } from '@/mocks/data'
+import { type Submission } from '@/types'
+
+const AdminDashboardPage = lazy(async () => {
+  const module = await import('@/features/admin/pages/AdminDashboardPage')
+  return { default: module.AdminDashboardPage }
+})
 
 export function DashboardPage() {
   const user = useAuthStore((state) => state.user)
@@ -26,7 +33,11 @@ export function DashboardPage() {
   }
 
   if (user.role === 'admin') {
-    return <AdminDashboardPage />
+    return (
+      <Suspense fallback={<PageLoadingFallback />}>
+        <AdminDashboardPage />
+      </Suspense>
+    )
   }
 
   if (submissionsQuery.isLoading || reviewsQuery.isLoading || !submissionsQuery.data || !reviewsQuery.data) {
@@ -49,6 +60,9 @@ export function DashboardPage() {
 
   const submissions = submissionsQuery.data.items
   const reviews = reviewsQuery.data.items
+  const reviewSubmissions = reviews
+    .map((review) => review.submission)
+    .filter((submission): submission is Submission => Boolean(submission))
 
   if (user.role === 'author') {
     const completed = submissions.filter((submission) =>
@@ -142,8 +156,8 @@ export function DashboardPage() {
       <div className="grid gap-6 2xl:grid-cols-[1.2fr_0.8fr]">
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Queue</h2>
-          {submissions.slice(0, 4).map((submission) => (
-            <SubmissionCard key={submission.id} submission={submission} />
+          {reviewSubmissions.slice(0, 4).map((submission) => (
+            <SubmissionCard key={submission.id} submission={submission} href={`/reviews/${submission.id}`} />
           ))}
         </div>
         <ActivityFeed items={activity} />

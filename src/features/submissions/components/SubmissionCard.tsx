@@ -5,9 +5,15 @@ import { Card, CardContent } from '@/components/ui/card'
 import { formatRelativeTime } from '@/lib/utils'
 import { type Submission } from '@/types'
 
-export function SubmissionCard({ submission }: { submission: Submission }) {
+export function SubmissionCard({
+  submission,
+  href,
+}: {
+  submission: Submission
+  href?: string
+}) {
   return (
-    <Link to={`/submissions/${submission.id}`}>
+    <Link to={href ?? `/submissions/${submission.id}`}>
       <Card className="hover:border-primary/30 hover:bg-primary/5">
         <CardContent className="space-y-4 p-6">
           <div className="flex items-start justify-between gap-4">
@@ -30,4 +36,3 @@ export function SubmissionCard({ submission }: { submission: Submission }) {
     </Link>
   )
 }
-
